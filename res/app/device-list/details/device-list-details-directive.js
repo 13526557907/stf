@@ -1,5 +1,6 @@
 var patchArray = require('./../util/patch-array')
-
+var request = require('request');
+var jwtutil = require('../../../../lib/util/jwtutil');
 module.exports = function DeviceListDetailsDirective(
   $filter
 , $compile
@@ -11,6 +12,7 @@ module.exports = function DeviceListDetailsDirective(
 , LightboxImageService
 , StandaloneService
 , LogcatService
+, timeOrderService
 ) {
   return {
     restrict: 'E'
@@ -124,6 +126,16 @@ module.exports = function DeviceListDetailsDirective(
         }
       }
 
+      function checkOrder(e) {  
+        if (e.target.classList.contains('DevicephoneOrder')) {
+          var i = e.target
+          var id = i.parentNode.parentNode.id
+          var device = mapping[id];
+          console.log(device);
+          timeOrderService.open(device);
+        }
+      }
+
       function destroyXeditableNote(id) {
         var tr = tbody.children[id]
         for (var i = 0; i < tr.cells.length; i++) {
@@ -155,6 +167,7 @@ module.exports = function DeviceListDetailsDirective(
       }
 
       element.on('click', function(e) {
+        checkOrder(e)
         checkDeviceStatus(e)
         checkDeviceSmallImage(e)
         checkDeviceNote(e)
@@ -257,6 +270,7 @@ module.exports = function DeviceListDetailsDirective(
 
       // Updates filters on visible items.
       function updateFilters(filters) {
+        console.log(filters);
         activeFilters = filters
         return filterAll()
       }
@@ -356,21 +370,16 @@ module.exports = function DeviceListDetailsDirective(
         var id = calculateId(device)
         var tr = document.createElement('tr')
         var td
-
         tr.id = id
-
         if (!device.usable) {
           tr.classList.add('device-not-usable')
         }
-
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
           td = scope.columnDefinitions[activeColumns[i]].build()
           scope.columnDefinitions[activeColumns[i]].update(td, device)
           tr.appendChild(td)
         }
-
         mapping[id] = device
-
         return tr
       }
 
@@ -421,6 +430,7 @@ module.exports = function DeviceListDetailsDirective(
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
+
           scope.columnDefinitions[activeColumns[i]].update(tr.cells[i], device)
         }
 
@@ -526,9 +536,26 @@ module.exports = function DeviceListDetailsDirective(
 
       // Triggers when the tracker sees a device for the first time.
       function addListener(device) {
-        var row = createRow(device)
-        filterRow(row, device)
-        insertRow(row, device)
+        request.post({url:`${jwtutil.baseUrl}/stf/findPhoneBySerial`, form:{serial: device.serial}}, function(error, response, body) {
+          if(!error) {
+            var phoneMessage = JSON.parse(body)
+            device.brandPhone= phoneMessage.phoneSelect.brand;
+            device.phoneType = phoneMessage.phoneSelect.phoneType;
+            device.assetNumbers = phoneMessage.phoneSelect.assetNumbers;
+            device.deviceModel= phoneMessage.phoneSelect.deviceModel;
+            device.screenSize= phoneMessage.phoneSelect.phoneSize;
+            device.resolvingPower= phoneMessage.phoneSelect.resolution;
+            device.sysVer= phoneMessage.phoneSelect.phoneVersion;
+            device.equipmentType= phoneMessage.phoneSelect.equipmentType;
+            var row = createRow(device)
+            filterRow(row, device)
+            insertRow(row, device)
+          } else {
+            console.log("error");
+            console.log(error);
+            res.render('error', { error: err });
+          }
+        })
       }
 
       // Triggers when the tracker notices that a device changed.

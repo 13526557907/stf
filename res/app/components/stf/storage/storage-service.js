@@ -3,34 +3,39 @@ var Promise = require('bluebird')
 module.exports = function StorageServiceFactory($http, $upload) {
   var service = {}
 
-  service.storeUrl = function(type, url) {
+  service.storeUrl = function (type, url) {
     return $http({
       url: '/s/download/' + type
-    , method: 'POST'
-    , data: {
+      , method: 'POST'
+      , data: {
         url: url
       }
     })
   }
 
-  service.storeFile = function(type, files, options) {
+  service.storeFile = function (type, files, options) {
+    console.log("enter  storeFile");
     var resolver = Promise.defer()
     var input = options.filter ? files.filter(options.filter) : files
-
+    console.log(input);
+    if (input.indexOf('.ipa') != -1) {
+      type = 'ipa'
+    }
     if (input.length) {
       $upload.upload({
-          url: '/s/upload/' + type
+        url: '/s/upload/' + type
         , method: 'POST'
         , file: input
-        })
+      })
         .then(
-          function(value) {
+          function (value) {
             resolver.resolve(value)
           }
-        , function(err) {
+          , function (err) {
+            console.log('errrrrr', err)
             resolver.reject(err)
           }
-        , function(progressEvent) {
+          , function (progressEvent) {
             resolver.progress(progressEvent)
           }
         )

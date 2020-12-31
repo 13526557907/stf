@@ -13,7 +13,7 @@
 device-screen {
   width: 100%;
   height: 100%;
-  background: gray;
+  background: #f4f4f4;
   position: relative;
   display: block;
   overflow: hidden;
@@ -26,6 +26,33 @@ device-screen {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.controlHeader{
+  height: 59px;
+  background: #FFFFFF;
+  border: 1px solid #D8D8D8;
+}
+.device-name-text{
+
+color: #1277F3;
+}
+.leftContainer{
+  position: absolute;
+  top: 10px
+}
+.screen-quality {
+  position: absolute;
+  top: 20px;
+  right: 20px
+}
+
+.screen-quality > p {
+  margin-top: 2px;
+  float: left;
+}
+
+.screen-quality > select {
+  float: left;
 }
 
 device-screen .positioner {
@@ -238,7 +265,7 @@ device-screen input {
 }
 
 .stf-device-control .stf-vnc-device-name .device-small-image {
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .stf-device-control .current-device {
@@ -278,4 +305,10 @@ device-screen input {
   -o-transition: none !important;
   -ms-transition: none !important;
   transition: none !important;
+}
+.time{
+  float: left;
+  margin-left: 17px;
+  margin-top: 12px;
+  color: #167FFC;
 }

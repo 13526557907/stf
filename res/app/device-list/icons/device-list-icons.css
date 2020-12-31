@@ -1,21 +1,42 @@
 ul.devices-icon-view {
   margin: 0;
-  display: inline-block;
   list-style-type: none;
   font-family: 'HelveticaNeue-UltraLight', Helvetica, Arial, sans-serif;
+  padding:0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-
+.totalSpan,.pageInputDiv{
+  height: 30px;
+  font-size: 14px;
+  font-family: PingFang-SC-Medium, PingFang-SC;
+  font-weight: 500;
+  color: #666666;
+  line-height: 30px;
+  margin-right: 10px;
+  float: left;
+  margin-top: 20px;
+  vertical-align: center;
+}
+.pageInput{
+  width: 28px;
+  height: 28px;
+  background: #FFFFFF;
+  border-radius: 1px;
+  border: 1px solid #DDDDDD
+}
 ul.devices-icon-view li {
-  width: 126px;
-  height: 170px;
+  width: 23%;
+  height: 230px;
   background: white;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  border-radius: 8px;
-  border: 1px solid #e9e9e9;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+  border: 1px solid #D8D8d8;
   float: left;
   clear: none;
-  margin: 6px;
   text-align: center;
 }
 
@@ -35,14 +56,26 @@ ul.devices-icon-view li:hover .device-photo-small img {
 }
 
 ul.devices-icon-view .device-photo-small {
-  margin-top: 8px;
+  margin-top: 0px;
   margin-bottom: 10px;
 }
 
 ul.devices-icon-view .device-photo-small img {
+  float: left;
+  /* margin: 20px; */
   width: auto;
-  height: 90px;
+  height: 100px;
+  margin-top: 16px;
+  margin-right: 0px;
   max-width: 95%; /* TODO: Fix this with a new container */
+}
+
+ul.devices-icon-view .device-photo-small div {
+  float: left;
+  color: #000;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 ul.devices-icon-view .device-name-bigtext {
@@ -64,7 +97,7 @@ ul.devices-icon-view .device-product {
 }
 
 ul.devices-icon-view .device-is-busy {
-  opacity: 0.6;
+  /* opacity: 0.6; */
   cursor: not-allowed;
   /*-webkit-filter: grayscale(100%);*/
   /*filter: grayscale(100%);*/
@@ -85,4 +118,121 @@ ul.devices-icon-view .device-status.state-available {
 ul.devices-icon-view .device-name.state-available {
   white-space: normal;
   max-height: 45px;
+}
+.device-title{
+  color: #000;
+  margin: 10px 0;
+  text-decoration:none;
+}
+.clearfix:after{/*伪元素是行内元素 正常浏览器清除浮动方法*/
+  content: "";
+  display: block;
+  height: 0;
+  clear:both;
+  visibility: hidden;
+}
+h4{
+  text-decoration:none;
+  color: #333;
+  font-size: 16px;
+  line-height: 18px;
+  margin-bottom: 0px !important;
+  font:14px Microsoft YaHei,SimHei,arial,SimSun;
+}
+p{
+  color: #555;
+  font-size: 12px;
+  padding-left: 10px;
+}
+.clearfix{
+  *zoom: 1;/*ie6清除浮动的方式 *号只有IE6-IE7执行，其他浏览器不执行*/
+}
+.device-photo-small{
+  width: 100%;
+  height: 130px;
+}
+.pDiv{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clickA{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+.order-btn{
+  position: absolute;
+  left: 33px;
+  bottom: 10px;
+  margin:0;
+  padding: 0;
+  cursor: pointer !important;
+}
+
+.back-div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.631372549019608);
+  /* opacity: 0.6; */
+  color: #fff;
+  display: none;
+  text-align: left;
+  border-radius: 5px;
+}
+.back-div-none{
+  display: none !important;
+}
+.back-div > p{
+  color: #fff;
+  margin: 16px;
+  font-size: 15px;
+  text-align: left;
+}
+.back-div:first-child{
+  font-size: 17px;
+}
+
+.clickA:hover .back-div{
+  display: block;
+}
+.backDivBtnCanel,.backDivBtnenter{
+  margin-left: 16px;
+  cursor: pointer !important;
+}
+.btn-link-use {
+  color: #03B615;
+  text-decoration:none;
+}
+
+.not-allow{
+  cursor: not-allowed !important;
+}
+.pageActive{
+  background-color: blue;
+  color:white;
+}
+.pagination > li{
+  display: inline-block;
+  margin-left: 5px;
+  border-radius:1px;
+}
+.pagination > .active > a{
+
+  background: #EFF5FF;
+  border-color: #1277F3;
+  color: #1277F3;
+}
+.pagination > li > a{
+  color: #333333;
+  width: 28px;
+  height: 28px;
+}
+.pagination > .active > a:hover{
+  background-color: #1277F3;
+    border-color: #1277F3;
 }

@@ -75,6 +75,7 @@ module.exports =
         // $scope.controlScreen.show = !$scope.controlScreen.show
       },
       togglePlatform: function() {
+        console.log("toggle nice")
         if ($rootScope.platform === 'web') {
           $rootScope.platform = 'native'
         } else {

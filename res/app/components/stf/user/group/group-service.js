@@ -37,6 +37,7 @@ module.exports = function GroupServiceFactory(
     }
 
     var tx = TransactionService.create(device)
+    console.log(tx);
     socket.emit('group.kick', device.channel, tx.channel, {
       requirements: {
         serial: {

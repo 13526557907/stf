@@ -30,3 +30,28 @@
   min-width: 44px;
   min-height: 35px;
 }
+.urlInputDiv{
+    width: 70%;
+    height: 44px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    border: 1px solid #DDDDDD;
+}
+.urlInput{
+  position: absolute;
+    top: 4px;
+    border: none;
+}
+.urlInputOpenButton{
+  width: 25%;
+  height: 44px;
+  background: #1277F3;
+  border-radius: 2px;
+  color: #fff;
+  font-weight: 300;
+  border: none;
+  margin-left: 5%;
+  position: absolute;
+  right: 0px;
+  bottom: 0;
+}

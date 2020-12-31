@@ -34,6 +34,7 @@ QueryParser.parse = function(input) {
 }
 
 QueryParser.prototype.parse = function(input) {
+  console.log(input);
   var chars = input.split('')
   for (var i = 0, l = chars.length; i < l; ++i) {
     this.consume(chars[i])

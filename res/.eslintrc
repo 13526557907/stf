@@ -24,5 +24,6 @@
     "angular": 1,
     "inject": 1,
     "waitUrl": 1
-  }
+  },
+  "parser": "babel-eslint"
 }

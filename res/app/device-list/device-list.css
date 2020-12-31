@@ -1,13 +1,55 @@
 .device-list {
   color: deepskyblue;
 }
-
+.widget-container {
+  padding-top:10px;
+}
 .stf-device-list .filtering-buttons {
   position: absolute;
-  top: 10px;
+  top: 0px;
   right: 20px;
 }
-
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  border-radius: 1px;
+  border: 1px solid #cccccc;
+}
+input[type="checkbox"]:checked {
+  background: url(../../common/icon/right.png)
+    no-repeat center;
+  background-size: 70% 75%;
+  border: 1px solid #1277F3;
+}
+.stateBtn{
+  width: 90px;
+  height: 33px;
+  background: #fff;
+  float: left;
+  font-size: 14px;
+  font-family: PingFang-SC-Medium, PingFang-SC;
+  font-weight: 500;
+  color: #333;
+  line-height: 33px;
+  text-align: center;
+  border: 1px solid #d8d8d8;
+  border-left: none;
+}
+.stateBtn:nth-of-type(1){
+  border-radius:1px 0 0 1px;
+  border-left:1px solid #d8d8d8;
+}
+.stateBtn:last-child{
+  border-radius:0 1px 1px 0px;
+}
+.stateBtnActive{
+  background: #1277F3;
+  color: #FFFFFF;
+  border:1px solid #1277F3
+}
 .stf-device-list .device-not-usable {
   color: #bbb
 }
@@ -18,6 +60,9 @@
 
 .stf-device-list .device-not-usable .btn {
   cursor: not-allowed;
+}
+.DevicephoneOrder {
+  cursor: pointer !important;
 }
 
 .stf-device-list .devices-not-available {
@@ -33,6 +78,14 @@
 
 .stf-device-list .device-status {
   margin-top: 4px;
+  width: 110px;
+  width: 50%;
+  height: 34px;
+  position: absolute;
+  bottom: -2px;
+  right: 37px;
+
+border-radius: 2px;
 }
 
 img.device-icon-smallest {
@@ -75,7 +128,15 @@ img.device-icon-smallest {
 .stf-device-list .device-product-name-using {
   border-bottom: 1px solid; /* leaving out the color inherits text color */
 }
-
+.filterDropButton{
+  width: 80px;
+  height: 28px;
+  font-size: 20px;
+  font-family: PingFang-SC-Heavy, PingFang-SC;
+  font-weight: 800;
+  color: #333333;
+  line-height: 28px;
+}
 .stf-device-list .device-note {
 }
 
@@ -86,4 +147,83 @@ img.device-icon-smallest {
 
 .stf-device-list .device-note:hover .device-note-edit {
   visibility: visible;
+}
+.checkbox label{
+  margin: 0 20px 5px 0;
+  line-height: 22px;
+}
+.brandText{
+  display: inline-block;
+  font-weight: bold;
+  padding-left: 0;
+}
+.brandDiv{
+  display: inline;
+  margin-left:20px
+}
+.selectedActive{
+  color: red;
+}
+.searchInput{
+  width: 308px;
+  height: 33px;
+  background: #FFFFFF;
+  border-radius: 1px;
+  border: 1px solid #D8D8D8;
+  padding-left: 15px;
+    color: #999999;
+    font-size: 12px;
+}
+.searchInputDiv{
+  width: 308px;
+  height: 33px;
+  position: relative;
+}
+.searchSpan{
+  display: inline-block;
+  width:13px;
+  height:13px;
+  background: url(../../common/icon/search.png)
+    no-repeat center;
+  background-size: 100% 100%;
+  position: absolute;
+  right: 33px;
+  bottom: 10px;
+  cursor: pointer;
+}
+.moreSpan{
+  display: inline-block;
+  width:13px;
+  height:13px;
+  background: url(../../common/icon/more.png)
+    no-repeat center;
+  background-size: 100% 100%;
+}
+.dropGreenSpan{
+  display: inline-block;
+  width:10px;
+  height:10px;
+  background: url(../../common/icon/greensanjiao.png)
+    no-repeat center;
+  background-size: 100% 100%;
+  margin-left:10px
+
+}
+.moreManufacturer{
+  width: 50px;
+  text-align: center;
+  float: right;
+  color: #1277f3;
+  margin-right: -8.5%;
+  position: relative;
+}
+.blankButton{
+  width: 110px;
+  height: 33px;
+  background: #1277F3;
+  border-radius: 2px;
+  text-align: center;
+  float:right;
+  color: #fff;
+    line-height: 33px;
 }

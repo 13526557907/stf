@@ -4,9 +4,10 @@ module.exports = angular.module('stf.dashboard', [
   require('./install/index').name,
   require('./apps/index').name,
   require('./clipboard/index').name,
-  require('./remote-debug/index').name
+  require('./remote-debug/index').name,
+  require('./upload/index').name
 ])
-  .run(['$templateCache', function($templateCache) {
+  .run(['$templateCache', function ($templateCache) {
     $templateCache.put(
       'control-panes/dashboard/dashboard.pug'
       , require('./dashboard.pug')

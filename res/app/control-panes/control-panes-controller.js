@@ -5,8 +5,7 @@
 module.exports =
   function ControlPanesController($scope, $http, gettext, $routeParams,
     $timeout, $location, DeviceService, GroupService, ControlService,
-    StorageService, FatalMessageService, SettingsService) {
-
+    StorageService, FatalMessageService, SettingsService, UserService) {
     var sharedTabs = [
       {
         title: gettext('Screenshots'),
@@ -14,18 +13,18 @@ module.exports =
         templateUrl: 'control-panes/screenshots/screenshots.pug',
         filters: ['native', 'web']
       },
-      {
-        title: gettext('Automation'),
-        icon: 'fa-road color-lila',
-        templateUrl: 'control-panes/automation/automation.pug',
-        filters: ['native', 'web']
-      },
-      {
-        title: gettext('Advanced'),
-        icon: 'fa-bolt color-brown',
-        templateUrl: 'control-panes/advanced/advanced.pug',
-        filters: ['native', 'web']
-      },
+      // {
+      //   title: gettext('Automation'),
+      //   icon: 'fa-road color-lila',
+      //   templateUrl: 'control-panes/automation/automation.pug',
+      //   filters: ['native', 'web']
+      // },
+      // {
+      //   title: gettext('Advanced'),
+      //   icon: 'fa-bolt color-brown',
+      //   templateUrl: 'control-panes/advanced/advanced.pug',
+      //   filters: ['native', 'web']
+      // },
       {
         title: gettext('File Explorer'),
         icon: 'fa-folder-open color-blue',
@@ -56,7 +55,7 @@ module.exports =
         templateUrl: 'control-panes/logs/logs.pug',
         filters: ['native', 'web']
       }
-    ].concat(angular.copy(sharedTabs))
+    ]
 
     $scope.device = null
     $scope.control = null
@@ -73,8 +72,15 @@ module.exports =
 
           // TODO: Change title, flickers too much on Chrome
           // $rootScope.pageTitle = device.name
-
-          SettingsService.set('lastUsedDevice', serial)
+            // UserService.getTime().then(resp=>{
+            //   if(resp.data.cumulativeTime <= 60) {
+            //     $timeout(function() {
+            //       $location.path('/')
+            //     })
+            //     return;
+            //   }
+              SettingsService.set('lastUsedDevice', serial)
+              // })
 
           return device
         })

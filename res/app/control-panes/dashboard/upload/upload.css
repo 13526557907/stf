@@ -1,0 +1,103 @@
+.stf-upload .btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.stf-upload .btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 999px;
+  text-align: right;
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.attionUpload{
+  padding-left: 15px;
+    font-size: 12px;
+    color: red;
+}
+
+.stf-upload .drop-area {
+  text-align: center;
+  color: #b7b7b7;
+  padding-top: 10px;
+  border: 2px transparent dashed;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.stf-upload .dragover {
+  border-color: #157afb !important;
+}
+
+.stf-upload .upload-status {
+  margin-top: 15px;
+}
+
+.stf-upload .manifest-text {
+  font-size: 10px;
+}
+
+.stf-upload .drop-area-text {
+  font-size: 14px;
+  font-weight: 300;
+}
+.fileInputDiv{
+  width: 70%;
+  height: 44px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  border: 1px solid #DDDDDD;
+  position: relative;
+  display:inline-block
+}
+.fileInputSPan{
+  width: 77px;
+  height: 27px;
+  background: #E1EFFF;
+  border-radius: 2px;
+  text-align: center;
+  line-height: 27px;
+  color: #1277F3;
+  font-size: 13px;
+  margin-top: 8px;
+  margin-left: 10px;
+  display: inline-block;
+}
+.fileInput{
+  opacity: 0;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.inputContainerDiv{
+  width:100%;
+  position: relative;
+}
+.fileInputButton{
+  width: 25%;
+    height: 44px;
+    background: #1277F3;
+    border-radius: 2px;
+    color: #fff;
+    font-weight: 300;
+    border: none;
+    margin-left: 5%
+}
+.fileInputNameSpan{
+  width: 70px;
+    height: 20px;
+    font-size: 12px;
+    font-family: PingFang-SC-Medium, PingFang-SC;
+    font-weight: 500;
+    color: #999999;
+    line-height: 20px;
+    margin-left:10px;
+}

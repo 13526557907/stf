@@ -18,6 +18,12 @@
   display: block;
 }
 
+.attionUpload{
+  padding-left: 15px;
+    font-size: 12px;
+    color: red;
+}
+
 .stf-upload .drop-area {
   text-align: center;
   color: #b7b7b7;

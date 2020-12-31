@@ -2,6 +2,7 @@
   .heading
     stacked-icon(icon='fa-upload', color='color-red')
     span(translate) App Upload
+    span(class="attionUpload" ng-if="device.platform == 'iOS'") (注意：请上传已签名ipa包！)
     clear-button(ng-click='clear()', ng-disabled='!installation').btn-xs
 
   .widget-content.padded()
@@ -18,7 +19,7 @@
 
       i.fa.fa-2x.fa-download.drop-area-icon
       .drop-area-text(translate) Drop file to upload
-
+    
     .upload-status(ng-if='installation').selectable
       uib-progressbar(max='100', value='installation.progress', ng-if='!installation.settled',
         ng-class='{"active": !installation.settled}').progress-striped
@@ -61,4 +62,4 @@
       alert(type='danger', close='clear()', ng-if='installation.error')
         strong(translate) Oops!
         | &#x20;
-        span {{ installation.error | installError | translate }} ({{ installation.error }})
+        span {{ installation.error | installError | translate }}

@@ -1,12 +1,8 @@
-/**
-* Copyright © 2019 contains code contributed by Orange SA, authors: Denis Barbaron - Licensed under the Apache license 2.0
-**/
-
 var oboe = require('oboe')
 var _ = require('lodash')
+var request = require('request');
 var EventEmitter = require('eventemitter3')
-let Promise = require('bluebird')
-
+var jwtutil = require('../../../../../lib/util/jwtutil');
 module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceService) {
   var deviceService = {}
 
@@ -68,8 +64,7 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
       if (!data.usable || !data.owner) {
         data.using = false
       }
-
-      EnhanceDeviceService.enhance(data)
+          EnhanceDeviceService.enhance(data);
     }
 
     function get(data) {
@@ -98,12 +93,6 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
       if (index >= 0) {
         devices.splice(index, 1)
         delete devicesBySerial[data.serial]
-        for (var serial in devicesBySerial) {
-          if (devicesBySerial[serial] > index) {
-            devicesBySerial[serial]--
-          }
-        }
-        sync(data)
         this.emit('remove', data)
       }
     }.bind(this)
@@ -142,8 +131,6 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
         }
         notify(event)
       }
-
-      /** code removed to avoid to show forbidden devices in user view!
       else {
         if (options.filter(event.data)) {
           insert(event.data)
@@ -152,7 +139,6 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
           notify(event)
         }
       }
-      **/
     }
 
     scopedSocket.on('device.add', addListener)
@@ -167,43 +153,6 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
     }
 
     this.devices = devices
-
-    function addGroupDevicesListener(event) {
-      return Promise.map(event.devices, function(serial) {
-        return deviceService.load(serial).then(function(device) {
-          return device
-        })
-      })
-      .then(function(_devices) {
-        _devices.forEach(function(device) {
-          if (device && typeof devicesBySerial[device.serial] === 'undefined') {
-            insert(device)
-            notify(event)
-          }
-        })
-      })
-    }
-
-    function removeGroupDevicesListener(event) {
-      event.devices.forEach(function(serial) {
-        if (typeof devicesBySerial[serial] !== 'undefined') {
-          remove(devices[devicesBySerial[serial]])
-          notify(event)
-        }
-      })
-    }
-
-    function updateGroupDeviceListener(event) {
-      let device = get(event.data)
-      if (device) {
-        modify(device, event.data)
-        notify(event)
-      }
-    }
-
-    scopedSocket.on('device.addGroupDevices', addGroupDevicesListener)
-    scopedSocket.on('device.removeGroupDevices', removeGroupDevicesListener)
-    scopedSocket.on('device.updateGroupDevice', updateGroupDeviceListener)
   }
 
   Tracker.prototype = new EventEmitter()
@@ -215,12 +164,12 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
       }
     , digest: false
     })
-
+    
     oboe('/api/v1/devices')
       .node('devices[*]', function(device) {
         tracker.add(device)
       })
-
+      console.log(tracker)
     return tracker
   }
 
@@ -267,6 +216,10 @@ module.exports = function DeviceServiceFactory($http, socket, EnhanceDeviceServi
       serial: serial,
       note: note
     })
+  }
+
+  deviceService.getDeviceLocal = function(serial) {
+      
   }
 
   return deviceService

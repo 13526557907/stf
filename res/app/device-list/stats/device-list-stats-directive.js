@@ -1,49 +1,68 @@
 /**
 * Copyright © 2019 contains code contributed by Orange SA, authors: Denis Barbaron - Licensed under the Apache license 2.0
 **/
-
 module.exports = function DeviceListStatsDirective(
-  UserService
+  UserService,
+  VmodalOpenService,
+  timetipmodeService
 ) {
   return {
     restrict: 'E'
-  , template: require('./device-list-stats.pug')
-  , scope: {
+    , template: require('./device-list-stats.pug')
+    , scope: {
       tracker: '&tracker'
     }
-  , link: function(scope, element) {
+    , link: function (scope, element) {
       var tracker = scope.tracker()
       var mapping = Object.create(null)
       var nodes = Object.create(null)
 
       scope.counter = {
         total: 0
-      , usable: 0
-      , busy: 0
-      , using: 0
+        , usable: 0
+        , busy: 0
+        , using: 0
+        , time: 0
       }
 
       scope.currentUser = UserService.currentUser
-
+      scope.timeDate = "";
       function findTextNodes() {
         var elements = element[0].getElementsByClassName('counter')
         for (var i = 0, l = elements.length; i < l; ++i) {
           nodes[elements[i].getAttribute('data-type')] = elements[i].firstChild
         }
+        gettime();
+        setTimeout(function () {
+          gettime();
+        }, 1000)
       }
+      function gettime() {
+        UserService.getTime().then(resp => {
+          scope.counter.time = resp.data.cumulativeTime / 60;
+          // nodes.time.nodeValue = scope.counter.time
+          if (resp.data.cumulativeTime <= 600 && resp.data.cumulativeTime > 0) {
+            timetipmodeService.open();
+          }
+          if (resp.data.cumulativeTime <= 0) {
+            VmodalOpenService.open();
+          }
+        })
 
+      }
       function notify() {
-        nodes.total.nodeValue = scope.counter.total
-        nodes.usable.nodeValue = scope.counter.usable
-        nodes.busy.nodeValue = scope.counter.busy
-        nodes.using.nodeValue = scope.counter.using
+        // nodes.total.nodeValue = scope.counter.total + 200
+        // nodes.usable.nodeValue = scope.counter.usable
+        // // nodes.busy.nodeValue = scope.counter.busy
+        // nodes.busy.nodeValue = parseInt((scope.counter.total + 200 - scope.counter.usable) * 0.8)
+        // nodes.using.nodeValue = scope.counter.using
       }
 
       function updateStats(device) {
         return (mapping[device.serial] = {
           usable: device.usable ? 1 : 0
-        , busy: device.owner ? 1 : 0
-        , using: device.using ? 1 : 0
+          , busy: device.owner ? 1 : 0
+          , using: device.using ? 1 : 0
         })
       }
 
@@ -94,7 +113,7 @@ module.exports = function DeviceListStatsDirective(
       tracker.on('change', changeListener)
       tracker.on('remove', removeListener)
 
-      scope.$on('$destroy', function() {
+      scope.$on('$destroy', function () {
         tracker.removeListener('add', addListener)
         tracker.removeListener('change', changeListener)
         tracker.removeListener('remove', removeListener)

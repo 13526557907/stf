@@ -1,6 +1,7 @@
 .device-stats {
   min-height: 100px;
   height: 100px;
+  width:100%;
   text-align: center;
 }
 
@@ -43,8 +44,57 @@
 .device-stats .fa {
   font-size: 0.8em;
 }
+.topNav{
+  width: 100%;
+  height: 74px;
+  background: linear-gradient(90deg, #0062CF 0%, #09C5EB 100%);
+  padding: 0px 30px 0px 30px
+}
+.userMessageDiv{
+  height: 74px;
+  line-height: 74px;
+  float: right;
+  color: #fff;
+  position: relative;
+  text-align: right;
+  padding-right: 20px;
+}
+.dangerSpan{
+  color:#ff3333
+}
+.avSpan{
+  display: inline-block;
+  width:15px;
+  height:15px;
+  background: url(../../../common/icon/av.png)
+    no-repeat center;
+    background-size: 100% 100%;
+    position: absolute;
+    left: -20px;
+    top: 29px;
+  
+}
 
+.dropWhiteSpan{
+  display: inline-block;
+  width:6px;
+  height:6px;
+  background: url(../../../common/icon/whitesanjiao.png)
+    no-repeat center;
+  background-size: 100% 100%;
+  margin-left:5px
 
+}
+.logoDiv{
+  background: url(../../../common/icon/logo.png) no-repeat 0 0;
+  width: 119px;
+  height: 46px;
+  float: left;
+  text-indent: -9999em;
+  margin: 10px 10px 0 10px;
+  background-size: 100% auto;
+  -webkit-background-size: 100% auto;
+}
 @media (max-width: 600px) {
   .device-stats {
     min-height: 60px;
@@ -74,5 +124,10 @@
   .device-stats [class*="col-"] .text {
     font-size: 0.8em;
     font-weight: 500;
+  }
+  .startTime > p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

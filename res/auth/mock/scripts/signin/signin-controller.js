@@ -15,7 +15,7 @@ module.exports = function SignInCtrl($scope, $http, CommonService) {
     $http.post('/auth/api/v1/mock', data)
       .success(function(response) {
         $scope.error = null
-        location.replace(response.redirect)
+        location.replace(response.redirect);
       })
       .error(function(response) {
         switch (response.error) {
@@ -38,9 +38,9 @@ module.exports = function SignInCtrl($scope, $http, CommonService) {
       })
   }
 
-  $scope.mailToSupport = function() {
-    CommonService.url('mailto:' + $scope.contactEmail)
-  }
+  // $scope.mailToSupport = function() {
+  //   CommonService.url('mailto:' + $scope.contactEmail)
+  // }
 
   $http.get('/auth/contact').then(function(response) {
     $scope.contactEmail = response.data.contact.email

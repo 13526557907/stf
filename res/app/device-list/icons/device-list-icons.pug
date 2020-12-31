@@ -1,4 +1,22 @@
 ul.devices-icon-view
 device-list-empty(tracker='tracker()')
 .clear-fix
-.line
+div(style="float:right")
+  div(class="totalSpan") 共 {{allLength}} 条
+  uib-pagination(
+  style='vertical-align: middle; width: -moz-max-content;float:left;margin-right:10px'
+  total-items='allLength'
+  items-per-page='limit'
+  class='pagination-sm'
+  max-size='5'
+  boundary-link-numbers='false'
+  previous-text='<' next-text='>' 
+  rotate='true'
+  ng-model='pageActive')
+  //- button(ng-click="pagePre()") <
+  //- button(ng-repeat="p in pageList" ng-click="pageChange(p)" ng-class="p === pageActive ? 'pageActive':'page'" ng-bind="p" )
+  //- button(ng-click="pageNext()") >
+  div(class="pageInputDiv")
+    span 前往 
+    input(type="text" class="pageInput" ng-model="pageInput")
+    span  页 

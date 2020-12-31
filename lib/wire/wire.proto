@@ -80,6 +80,7 @@ enum MessageType {
   ReverseForwardsEvent       = 72;
   FileSystemListMessage      = 81;
   FileSystemGetMessage       = 82;
+  FileSystemSaveMessage      = 83;
   ConnectStartedMessage      = 92;
   ConnectStoppedMessage      = 93;
   GroupUserChangeMessage     = 1200;
@@ -254,7 +255,9 @@ message FileSystemListMessage {
 message FileSystemGetMessage {
   required string file = 1;
 }
-
+message FileSystemSaveMessage {
+  required string href = 1;
+}
 message Envelope {
   required MessageType type = 1;
   required bytes message = 2;

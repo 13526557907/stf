@@ -1,0 +1,45 @@
+.widget-container.fluid-height.stf-upload(ng-controller='UploadCtrl')
+  .widget-content.padded()
+    //.input-group.form-inline
+      input(type=text, ng-model='remoteUrl', ng-enter='installUrl(remoteUrl)',
+      placeholder='http://...').form-control
+      span.input-group-btn
+        button.btn.btn-primary-outline(ng-click='installUrl(remoteUrl)',
+        uib-tooltip='{{ "Upload From Link" | translate }}', ng-disabled='!remoteUrl')
+          i.fa.fa-upload
+    div(ng-include='"control-panes/dashboard/navigation/navigation.pug"')
+    
+    div(class="inputContainerDiv")
+      span(class="fileInputDiv")
+        div(class="fileInputSPan") 选取文件
+          input(type='file', class="fileInput" ng-file-select='saveFileReady($files)')
+        span(class="fileInputNameSpan") {{fileName}}
+      button(ng-click="saveFile()",class="fileInputButton") 上传至设备
+    .upload-status(ng-if='installationFile').selectable
+      uib-progressbar(max='100', value='installationFile.progress', ng-if='!installationFile.settled',
+        ng-class='{"active": !installationFile.settled}').progress-striped
+      div(ng-if='!installationFile.error')
+        span(ng-switch='installationFile.state')
+          strong(ng-switch-when='uploading')
+            span(translate) Uploading...
+            span  ({{installationFile.progress}}%)
+          strong(ng-switch-when='processing')
+            span(translate) Processing...
+            span  ({{installationFile.progress}}%)
+          strong(ng-switch-when='pushing_files')
+            span(translate) Pushing files...
+            span  ({{installationFile.progress}}%)
+          strong(ng-switch-when='installing_app')
+            span(translate) Installing app...
+            span  ({{installationFile.progress}}%)
+          strong(ng-switch-when='launching_app')
+            span(translate) Launching activity...
+            span  ({{installationFile.progress}}%)
+          strong(ng-switch-when='installed')
+            alert(type='success', close='clear()')
+              span 推送成功！
+
+      alert(type='danger', close='clear()', ng-if='installationFile.error')
+        strong(translate) Oops!
+        | &#x20;
+        span {{ installationFile.error | installError | translate }}

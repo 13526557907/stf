@@ -1,56 +1,69 @@
 .stf-device-list
-  .row.stf-stats-container.unselectable
-    .col-md-12
-      device-list-stats(tracker='tracker')
+  .row.stf-stats-container(style="margin:0").unselectable
+    device-list-stats(tracker='tracker')
 
-  .row.unselectable
-    .col-md-12
-      .widget-container.fluid-height.stf-device-list-tabs
-        .widget-content.padded
+  .row.unselectable(style="margin:0")
+    .widget-container(style="padding: 0px 30px 0px 30px;").fluid-height.stf-device-list-tabs.col-md-12  
+      .checkbox.col-md-12
+        span.brandText.col-md-1 
+          span(class="filterDropButton") 机型筛选
+          span(class="dropGreenSpan")
+        .filtering-buttons
+          div(class="searchDiv")
+            input(type='search' class="searchInput" placeHolder="请输入关键词搜索" autosave='deviceFilter'
+              name='deviceFilter', ng-model='search.deviceFilter')
+            span(class="searchSpan" ng-click='applyFilterInput(search.deviceFilter)')      
+      
+      .checkbox.col-md-12
+        span.brandText.col-md-1 品牌
+        .brandDiv.col-md-10
+          label
+            input(type="checkbox",name="manufacturer",class="allCheck checkInputs",id="manufacturerAllCheck",ng-click="allCheck($event,'manufacturer')")
+            span 全选
+          label(ng-repeat="v in ManufacturerList track by $index")
+            input(type="checkbox",name="manufacturer", ng-value="v",class="manufacturer checkInputs",ng-click="checkInput(v,$event,'manufacturer')")
+            span() {{v}}
+          div(class="moreManufacturer" ng-click="moreButtonToggle()")
+            span {{moreButtonValue}}
+            span(class='moreSpan' style="position: absolute;top: 3px;")
+      .checkbox.col-md-12
+        span.brandText.col-md-1 iOS系统版本
+        .brandDiv.col-md-10
+          label
+            input(type="checkbox",name="version",class="allCheck checkInputs",id="iOSversionAllCheck",ng-click="allCheck($event,'version','iOS')")
+            span 全选
+          label(ng-repeat="v in filterList.version.iOS.values track by $index")
+            input.brandCheck(type="checkbox",name="version",ng-value="v",class="iOSversion checkInputs",ng-click="checkInput(v,$event,'version','iOS')")
+            span {{v}}
+      .checkbox.col-md-12
+        span.brandText.col-md-1 Android系统版本
+        .brandDiv.col-md-10
+          label
+            input(type="checkbox",name="version",class="allCheck checkInputs",id="AndroidversionAllCheck",ng-click="allCheck($event,'version','Android')")
+            span 全选
+          label(ng-repeat="v in filterList.version.Android.values track by $index")
+            input.brandCheck(type="checkbox",name="version",ng-value="v",class="Androidversion checkInputs",ng-click="checkInput(v,$event,'version','Android')")
+            span {{v}}
+      .checkbox.col-md-12
+        span.brandText.col-md-1 分辨率
+        .brandDiv.col-md-10
+          label
+            input(type="checkbox",name="display",class="allCheck checkInputs",id="displayAllCheck",ng-click="allCheck($event,'display')")
+            span 全选
+          label(ng-repeat="v in filterList.display.values.display track by $index" )
+            input(type="checkbox",name="display",ng-value="v",class="display checkInputs",ng-click="checkInput(v,$event,'display')")
+            span {{v}}
+      .checkbox.col-md-12 
+          div( ng-repeat="v in stateList track by $index"  ng-class="v.value===stateActive ? 'stateBtn stateBtnActive':'stateBtn'" ng-click="stateButtonChange(v.value)") {{v.label}}
+          a(ng-href='/#!/groups')
+            div(class="blankButton") 查看使用记录
+      .widget-content.padded.col-md-12
+        device-list-icons(tracker='tracker', columns='columns', sort='sort', filter='filter')
 
-          .filtering-buttons
-            datalist(id='searchFields')
-              select(name='searchFields')
-                option(ng-repeat='column in columns', ng-value='column.name + ": "',
-                ng-bind='columnDefinitions[column.name].title | translate')
-            input(type='search', autosave='deviceFilter'
-              name='deviceFilter', ng-model='search.deviceFilter', ng-change='applyFilter(search.deviceFilter)',
-              ng-model-options='{debounce: 150}'
-              autocorrect='off', autocapitalize='off', spellcheck='false',
-              list='searchFields', multiple, focus-element='search.focusElement',
-              text-focus-select, accesskey='4').form-control.input-sm.device-search.pull-right
+          //- uib-tab(active='activeTabs.details', select='focusSearch()', ng-if='!$root.basicMode')
+          //-   uib-tab-heading
+          //-     i.fa.fa-list
+          //-     span(translate) Details
+          //-   div.device-list-details-content(ng-if='activeTabs.details').selectable
 
-            span.pull-right(ng-if='activeTabs.details && !$root.basicMode')
-              .btn-group(uib-dropdown).pull-right
-                button.btn.btn-sm.btn-primary-outline(type='button', uib-dropdown-toggle)
-                  i.fa.fa-columns
-                  span(ng-bind='"Customize"|translate')
-
-                ul.uib-dropdown-menu(role='menu').pointer.stf-device-details-customize
-                  li(ng-repeat='column in columns track by column.name',
-                  ng-hide='!adminMode && columnDefinitions[column.name].admin',
-                  ng-click='$event.stopPropagation()')
-                    label.checkbox.pointer
-                      input(type='checkbox', ng-model='column.selected')
-                      span(ng-bind='columnDefinitions[column.name].title | translate')
-                  li
-                    button(ng-click='reset()').btn.btn-xs.btn-danger-outline
-                      i.fa.fa-trash-o
-                      span(ng-bind='"Reset"|translate')
-
-          uib-tabset.overflow-auto.device-list-active-tabs(ng-if='activeTabs')
-            uib-tab(active='activeTabs.icons', select='focusSearch()')
-              uib-tab-heading
-                i.fa.fa-th-large
-                span(translate) Devices
-              div.device-list-devices-content(ng-if='activeTabs.icons').selectable
-
-                device-list-icons(tracker='tracker', columns='columns', sort='sort', filter='filter')
-
-            uib-tab(active='activeTabs.details', select='focusSearch()', ng-if='!$root.basicMode')
-              uib-tab-heading
-                i.fa.fa-list
-                span(translate) Details
-              div.device-list-details-content(ng-if='activeTabs.details').selectable
-
-                device-list-details(tracker='tracker', columns='columns', sort='sort', filter='filter').selectable
+          //-     device-list-details(tracker='tracker', columns='columns', sort='sort', filter='filter').selectable

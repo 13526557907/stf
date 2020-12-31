@@ -4,9 +4,9 @@ Promise.longStackTraces()
 
 module.exports = function InstallService(
   $rootScope
-, $http
-, $filter
-, StorageService
+  , $http
+  , $filter
+  , StorageService
 ) {
   var installService = Object.create(null)
 
@@ -24,27 +24,27 @@ module.exports = function InstallService(
   Installation.prototype = Object.create(EventEmitter.prototype)
   Installation.prototype.constructor = Installation
 
-  Installation.prototype.apply = function($scope) {
+  Installation.prototype.apply = function ($scope) {
     function changeListener() {
       $scope.safeApply()
     }
 
     this.on('change', changeListener)
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       this.removeListener('change', changeListener)
     }.bind(this))
 
     return this
   }
 
-  Installation.prototype.update = function(progress, state) {
+  Installation.prototype.update = function (progress, state) {
     this.progress = Math.floor(progress)
     this.state = state
     this.emit('change')
   }
 
-  Installation.prototype.okay = function(state) {
+  Installation.prototype.okay = function (state) {
     this.settled = true
     this.progress = 100
     this.success = true
@@ -52,7 +52,7 @@ module.exports = function InstallService(
     this.emit('change')
   }
 
-  Installation.prototype.fail = function(err) {
+  Installation.prototype.fail = function (err) {
     this.settled = true
     this.progress = 100
     this.success = false
@@ -60,74 +60,119 @@ module.exports = function InstallService(
     this.emit('change')
   }
 
-  installService.installUrl = function(control, url) {
+  installService.installUrl = function (control, url) {
     var installation = new Installation('downloading')
     $rootScope.$broadcast('installation', installation)
     return control.uploadUrl(url)
-      .progressed(function(uploadResult) {
+      .progressed(function (uploadResult) {
         installation.update(uploadResult.progress / 2, uploadResult.lastData)
       })
-      .then(function(uploadResult) {
+      .then(function (uploadResult) {
         installation.update(uploadResult.progress / 2, uploadResult.lastData)
         installation.manifest = uploadResult.body
         return control.install({
-            href: installation.href
+          href: installation.href
           , manifest: installation.manifest
           , launch: installation.launch
-          })
-          .progressed(function(result) {
+        })
+          .progressed(function (result) {
             installation.update(50 + result.progress / 2, result.lastData)
           })
       })
-      .then(function() {
+      .then(function () {
         installation.okay('installed')
       })
-      .catch(function(err) {
+      .catch(function (err) {
         installation.fail(err.code || err.message)
       })
   }
 
-  installService.installFile = function(control, $files) {
+  installService.installFile = function (control, $files) {
     var installation = new Installation('uploading')
+    console.log("enter installfile")
     $rootScope.$broadcast('installation', installation)
     return StorageService.storeFile('apk', $files, {
-        filter: function(file) {
+      filter: function (file) {
+        console.log("this is file 666666")
+        console.log(file);
+        if (file.name.indexOf('.apk') != -1) {
           return /\.apk$/i.test(file.name)
         }
-      })
-      .progressed(function(e) {
+        else {
+          return /\.ipa$/i.test(file.name)
+        }
+      }
+    })
+      .progressed(function (e) {
         if (e.lengthComputable) {
           installation.update(e.loaded / e.total * 100 / 2, 'uploading')
         }
       })
-      .then(function(res) {
+      .then(function (res) {
         installation.update(100 / 2, 'processing')
         installation.href = res.data.resources.file.href
+        console.log(installation.href);
         return $http.get(installation.href + '/manifest')
-          .then(function(res) {
+          .then(function (res) {
+            console.log(res);
             if (res.data.success) {
               installation.manifest = res.data.manifest
+              console.log(installation.href);
+              console.log(installation.manifest)
+              console.log(installation.launch)
               return control.install({
-                  href: installation.href
+                href: installation.href
                 , manifest: installation.manifest
                 , launch: installation.launch
-                })
-                .progressed(function(result) {
+              })
+                .progressed(function (result) {
+                  console.log('result.lastData', result.lastData)
                   installation.update(50 + result.progress / 2, result.lastData)
                 })
             }
             else {
+              console.log(2222222);
               throw new Error('Unable to retrieve manifest')
             }
           })
       })
-      .then(function() {
+      .then(function () {
         installation.okay('installed')
       })
-      .catch(function(err) {
+      .catch(function (err) {
         installation.fail(err.code || err.message)
       })
   }
-
+  installService.saveFile = function (control, $files) {
+    var installation = new Installation('uploading')
+    $rootScope.$broadcast('saveFiles', installation)
+    return StorageService.storeFile('apk', $files, {})
+      .progressed(function (e) {
+        if (e.lengthComputable) {
+          console.log('uploading.....')
+          installation.update(e.loaded / e.total * 100 / 2, 'uploading')
+        }
+      })
+      .then(function (res) {
+        console.log('res', res)
+        installation.update(100 / 2, 'processing')
+        installation.href = res.data.resources.file.href
+        console.log('installation.href', installation.href)
+        return control.saveFile({
+          href: installation.href
+        })
+          .progressed(function (result) {
+            console.log('send to phone-------')
+            installation.update(50 + result.progress / 2, result.lastData)
+          })
+      })
+      .then(function () {
+        installation.okay('installed')
+      })
+      .catch(function (err) {
+        console.log('err', err)
+        installation.fail(err.code || err.message)
+      })
+  }
   return installService
 }

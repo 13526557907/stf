@@ -95,7 +95,6 @@ module.exports = function SettingsServiceFactory(
       }
     , true
     )
-
     scope[options.target] = value(settings[source], defaultValue)
   }
 
