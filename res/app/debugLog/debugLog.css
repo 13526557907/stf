@@ -1,0 +1,104 @@
+body {
+    background: #eeeeee;
+}
+.col-xs-1-5,
+.col-sm-1-5,
+.col-md-1-5,
+.col-lg-1-5 {
+	position: relative;
+	min-height: 1px;
+	margin-right: 10px;
+	margin-left: 10px;
+ 
+}
+.col-xs-1-5 {
+	width: 18%;
+	float: left;
+}
+ 
+@media (min-width: 768px) {
+	.col-sm-1-5 {
+		width: 18%;
+		float: left;
+	}
+}
+ 
+@media (min-width: 992px) {
+	.col-md-1-5 {
+		width: 18%;
+		float: left;
+	}
+}
+ 
+@media (min-width: 1200px) {
+	.col-lg-1-5 {
+		width: 18%;
+		float: left;
+	}
+}
+
+
+.debugPage{
+    padding: 40px;
+    background: #fff
+}
+.logTable{
+    height: 300px;
+    overflow: scroll;
+ }
+  .logTable .log-Verbose {
+    color: blueviolet;
+  }
+  
+  .logTable .log-Debug {
+    color: #020c7d;
+  }
+  
+  .logTable .log-Info {
+    color: #177d1c;
+  }
+  
+  .logTable .log-Warn {
+    color: coral;
+  }
+  
+  .logTable .log-Error {
+    color: red;
+  }
+  
+  .logTable .log-Fatal {
+    color: darkcyan;
+  }
+  .tiileTop,.tiileLogs{
+      position: relative;
+  }
+  .titleLine{
+    width: 3px;
+    height: 16px;
+    background-color: #309FFC;
+    position: absolute;
+    left: 0;
+    top: 3px;
+  }
+  .titleMessage {
+      margin:20px 8px;
+      font-size: 16px;
+    color: #333;
+    font-weight: bold;
+  }
+  .logsTable{
+      margin:25px 0;
+  }
+  .downLownImg{
+      text-align: right;
+  }
+  .logImage img{
+      width: 167px;
+      height: 279px;
+  }
+  .logImage .col-xs-1-5{
+      text-align: center;
+  }
+  .tiileDiv{
+      margin:20px 0;
+  }

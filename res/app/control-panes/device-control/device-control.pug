@@ -17,9 +17,8 @@
             button(type='button', ng-model='showScreen', uib-btn-checkbox).btn.btn-xs.btn-info
               i(ng-show='showScreen', uib-tooltip='{{"Hide Screen"|translate}}', tooltip-placement='bottom').fa.fa-eye
               i(ng-show='!showScreen', uib-tooltip='{{"Show Screen"|translate}}', tooltip-placement='bottom').fa.fa-eye-slash
-            button(type='button', ng-click='kickDevice(device); $event.stopPropagation()', uib-tooltip='{{"Stop Using"|translate}}', tooltip-placement='bottom').btn.btn-sm.btn-danger-outline
+            button(type='button', ng-click='kickDevice(device); $event.stopPropagation()', uib-tooltip='{{"Stop Using"|translate}}', tooltip-placement='bottom').btn.btn-sm.btn-danger-outline#btnOut
               i.fa.fa-times
-
           .device-name-container.pull-left(uib-dropdown)
             a.stf-vnc-device-name.pointer.unselectable(uib-dropdown-toggle)
               p
@@ -39,12 +38,23 @@
                   .pull-right(ng-click='kickDevice(groupDevice); $event.stopPropagation()').kick-device
                     i.fa.fa-times
                   .clearfix
+          div.time 已使用 &nbsp&nbsp
+            span#minutes 00
+            span 分
+            span#seconds 00
+            span 秒
+          .screen-quality
+            p 画质：
+            select(ng-model='quality', ng-change="test()")
+              option(value='60') 高
+              option(value='30') 中
+              option(value='15') 低
 
       .as-row.fill-height
         div(ng-controller='DeviceScreenCtrl', ng-if='device').as-cell.fill-height
           div(ng-file-drop='installFile($files)', ng-file-drag-over-class='dragover').fill-height
             device-context-menu(device='device', control='control')
-              device-screen(device='device', control='control')
+              device-screen(device='device', control='control' , quality='rate')
 
       .stf-vnc-bottom.as-row(ng-hide='$root.standalone')
         .controls.as-cell

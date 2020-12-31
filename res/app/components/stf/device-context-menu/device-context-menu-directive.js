@@ -17,6 +17,8 @@ module.exports = function deviceContextMenuDirective($window) {
 
       scope.saveScreenShot = function() {
         scope.control.screenshot().then(function(result) {
+          console.log("图片下载")
+          console.log(result);
           location.href = result.body.href + '?download'
         })
       }

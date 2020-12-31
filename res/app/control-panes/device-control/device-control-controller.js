@@ -1,27 +1,54 @@
 var _ = require('lodash')
-
-module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
-  $location, $timeout, $window, $rootScope, LogcatService) {
+var request = require('request');
+var jwtutil = require('../../../../lib/util/jwtutil');
+module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,UserService,
+  $location, $timeout, $window, $rootScope, $http, phoneTimeoutService) {
 
   $scope.showScreen = true
-
+  $scope.hour = "66"
+  var hour = 0;
+  var minutes = 0;
+  var seconds = 0;
+  $scope.timeRemb = 0;
   $scope.groupTracker = DeviceService.trackGroup($scope)
+  $scope.groupDevices = $scope.groupTracker.devices;
+  var hrefArr = $window.location.href.split('/');
+  var deviceFor = hrefArr[hrefArr.length-1];
+  var timer = setInterval(function(){      
+         seconds ++;
+         if(seconds == 60){
+          // 
+          UserService.getTime().then(resp=>{
+            if(resp.data.cumulativeTime <= 0) {
+                $location.path('/')
+            }
+            })
+            request.post({url:`${jwtutil.baseUrl}/stf/findPhoneBySerial`, form:{serial: deviceFor}},function(error, response, body) {
+              var respBody = JSON.parse(body);
+              console.log(respBody);
+              console.log(respBody.appoint , UserService.publicEmail , UserService.publicEmail)
+              if(respBody.appoint == 1 && UserService.publicEmail != respBody.stfAppoint.account ) {
+                    phoneTimeoutService.open();
+                    $location.path('/')
+                // console.log(respBody.stfAppoint.endtime.replace('-','/').replace('-','/'));
+                // console.log(jwtutil.transTime(new Date()));
+                // $scope.timeRemb = respBody.stfAppoint.endtime.replace('-','/').replace('-','/');
+              }
+            })
+            // if($scope.timeRemb - jwtutil.transTime(new Date()) <=0 && $scope.timeRemb !=0) {
+            // }
 
-  $scope.groupDevices = $scope.groupTracker.devices
-
-  $scope.$on('$locationChangeStart', function(event, next, current) {
-    $scope.LogcatService = LogcatService
-    $rootScope.LogcatService = LogcatService
-  })
-
+            seconds = 0;
+            minutes ++;
+            };
+            if(document.getElementById('minutes')!==null) {
+              document.getElementById('minutes').innerHTML = minutes;
+              document.getElementById('seconds').innerHTML = seconds;
+            } else {
+              clearInterval(timer);
+            }
+        },1000);
   $scope.kickDevice = function(device) {
-    if (Object.keys(LogcatService.deviceEntries).includes(device.serial)) {
-      LogcatService.deviceEntries[device.serial].allowClean = true
-    }
-
-    $scope.LogcatService = LogcatService
-    $rootScope.LogcatService = LogcatService
-
     if (!device || !$scope.device) {
       alert('No device found')
       return
@@ -30,7 +57,6 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
     try {
       // If we're trying to kick current device
       if (device.serial === $scope.device.serial) {
-
         // If there is more than one device left
         if ($scope.groupDevices.length > 1) {
 
@@ -52,6 +78,7 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
           $location.path('/devices/')
         }
       } else {
+        console.log("enter 888236")
         GroupService.kick(device).then(function() {
           $scope.$digest()
         })
@@ -64,6 +91,12 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
   $scope.controlDevice = function(device) {
     $location.path('/control/' + device.serial)
   }
+  function showNum(num) {
+    if (num < 10) {
+     return '0' + num
+    }
+    return num
+   }
 
   function isPortrait(val) {
     var value = val
@@ -143,5 +176,16 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
       $window.resizeTo($window.outerHeight, $window.outerWidth)
     }
   }
+  $scope.quality = '50'
+  $scope.rate = $scope.quality
+  $scope.test = function() {
+    // $log.log('调整画质为：' + $scope.quality)
+    $scope.rate = $scope.quality
+  }
+    $scope.$on("$destroy", function() {
+      GroupService.kick($scope.device).then(function() {
+        $scope.$digest()
+      })
+  })
 
 }

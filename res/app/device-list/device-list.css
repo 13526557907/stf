@@ -1,10 +1,12 @@
 .device-list {
   color: deepskyblue;
 }
-
+.widget-container {
+  padding-top:10px;
+}
 .stf-device-list .filtering-buttons {
   position: absolute;
-  top: 10px;
+  top: 0px;
   right: 20px;
 }
 
@@ -18,6 +20,9 @@
 
 .stf-device-list .device-not-usable .btn {
   cursor: not-allowed;
+}
+.DevicephoneOrder {
+  cursor: pointer !important;
 }
 
 .stf-device-list .devices-not-available {
@@ -33,6 +38,7 @@
 
 .stf-device-list .device-status {
   margin-top: 4px;
+  width: 110px;
 }
 
 img.device-icon-smallest {
@@ -86,4 +92,18 @@ img.device-icon-smallest {
 
 .stf-device-list .device-note:hover .device-note-edit {
   visibility: visible;
+}
+.checkbox label{
+  margin: 0 20px 5px 0;
+  line-height: 22px;
+}
+.brandText{
+  display: inline-block;
+  font-weight: bold;
+}
+.brandDiv{
+  display: inline;
+}
+.selectedActive{
+  color: red;
 }

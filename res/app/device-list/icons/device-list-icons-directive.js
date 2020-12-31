@@ -1,13 +1,17 @@
 var patchArray = require('./../util/patch-array')
-
+var request = require('request');
+var jwtutil = require('../../../../lib/util/jwtutil');
+const { devices } = require('../../../../lib/db/tables');
 module.exports = function DeviceListIconsDirective(
   $filter
 , gettext
 , DeviceColumnService
 , GroupService
 , StandaloneService
-, LogcatService
-, $rootScope
+, VmodalOpenService
+, UserService
+, phoneCancelnService
+, timeOrderService
 ) {
   function DeviceItem() {
     return {
@@ -16,15 +20,53 @@ module.exports = function DeviceListIconsDirective(
         li.className = 'cursor-select pointer thumbnail'
 
         // the whole li is a link
-        var a = document.createElement('a')
+        var a = document.createElement('a');
+        a.className = "clearfix clickA";
         li.appendChild(a)
 
         // .device-photo-small
-        var photo = document.createElement('div')
+        var photo = document.createElement('div');
+        var title = document.createElement('h4');
         photo.className = 'device-photo-small'
-        var img = document.createElement('img')
-        photo.appendChild(img)
-        a.appendChild(photo)
+        title.className = 'device-title'
+        var img = document.createElement('img');
+        var imgRight = document.createElement('div')
+        var imgRightP1 = document.createElement('p');
+        var imgRightP2 = document.createElement('p');
+        var imgRightP3 = document.createElement('p');
+        var imgRightP4 = document.createElement('p');
+        var imgRightP5 = document.createElement('p');
+        var backDiv = document.createElement('div');
+        var backDivP1 = document.createElement('p');
+        var backDivP2 = document.createElement('p');
+        var backDivP3 = document.createElement('p');
+        var backDivP4 = document.createElement('p');
+        var backDivBtnCanel = document.createElement('button');
+        backDivBtnCanel.className = 'btn btn-danger btn-xs backDivBtnCanel';
+        var orderBtn = document.createElement('button');
+        orderBtn.appendChild(document.createTextNode('预约'));
+        orderBtn.className = "order-btn";
+        backDiv.className = "back-div-none";
+        backDivBtnCanel.appendChild(document.createTextNode('取消预约'));
+        backDivP1.appendChild(document.createTextNode('已预约'));
+        
+        backDivP4.appendChild(document.createTextNode('（注意：预约成功将收到短信提醒，未收到提醒则为预约失败。）'));
+        orderBtn.className = 'order-btn btn btn-link'
+        photo.appendChild(img);
+        imgRight.className = 'pDiv'
+        imgRight.appendChild(imgRightP1);
+        imgRight.appendChild(imgRightP2);
+        imgRight.appendChild(imgRightP3);
+        imgRight.appendChild(imgRightP4);
+        imgRight.appendChild(imgRightP5);
+        photo.appendChild(imgRight);
+        backDiv.appendChild(backDivP1);
+        backDiv.appendChild(backDivP2);
+        backDiv.appendChild(backDivP3);
+        backDiv.appendChild(backDivP4);
+        backDiv.appendChild(backDivBtnCanel);
+        a.appendChild(title);
+        a.appendChild(photo);
 
         // .device-name
         var name = document.createElement('div')
@@ -33,37 +75,100 @@ module.exports = function DeviceListIconsDirective(
         a.appendChild(name)
 
         // button
-        var button = document.createElement('button')
-        button.appendChild(document.createTextNode(''))
-        a.appendChild(button)
-
+        var button = document.createElement('button');
+        button.appendChild(document.createTextNode(''));
+        a.appendChild(button);
+        a.appendChild(backDiv);
+        a.appendChild(orderBtn);
         return li
       }
     , update: function(li, device) {
-        var a = li.firstChild
-        var img = a.firstChild.firstChild
-        var name = a.firstChild.nextSibling
-        var nt = name.firstChild
-        var button = name.nextSibling
+      if(device.serial == "8DF6R16801008628") {
+        console.log(device)
+      }
+        var li = li
+        var a = li.firstChild;
+        var titleType = a.firstChild;
+        var img = a.firstChild.nextSibling.firstChild;
+        var phoneType1 = a.firstChild.nextSibling.firstChild.nextSibling.childNodes[0]
+        var phoneType2 = a.firstChild.nextSibling.firstChild.nextSibling.childNodes[1]
+        var phoneType3 = a.firstChild.nextSibling.firstChild.nextSibling.childNodes[2]
+        var phoneType4 = a.firstChild.nextSibling.firstChild.nextSibling.childNodes[3]
+        var phoneType5 = a.firstChild.nextSibling.firstChild.nextSibling.childNodes[4]
+        
+         var name = a.firstChild.nextSibling
+        var button = a.firstChild.nextSibling.nextSibling.nextSibling
+        var orderBtn = a.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;
+        
+        var backDiv = a.firstChild.nextSibling.nextSibling.nextSibling.nextSibling;
+        var backDivP2 = a.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.nextSibling
+        var backDivP3 = a.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.nextSibling
+        var backDivBtnCanel = a.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.nextSibling.nextSibling
         var at = button.firstChild
         var classes = 'btn btn-xs device-status '
 
         // .device-photo-small
         if (img.getAttribute('src') !== device.enhancedImage120) {
-          img.setAttribute('src', device.enhancedImage120)
+          // img.setAttribute('src', device.enhancedImage120);
+          
         }
+        // request.post({url:`${jwtutil.baseUrl}/stf/findPhoneBySerial`, form:{serial: device.serial}}, function(error, response, body) {
+          at.nodeValue = $filter('translate')(device.enhancedStateAction)
+          if(device.respBody) {
+            var respBody = device.respBody
+            device.brandPhone= respBody.phoneSelect.brand;
+            device.phoneType = respBody.phoneSelect.phoneType;
+            if(respBody.appoint == 2 && UserService.publicEmail == respBody.stfAppoint.account) {
+              orderBtn.innerHTML = "已预约"
+              orderBtn.className = 'order-btn btn btn-link btn-link-use'
 
-        // .device-name
-        nt.nodeValue = device.enhancedName
-
-        // button
-        at.nodeValue = $filter('translate')(device.enhancedStateAction)
+              backDiv.className = 'back-div';
+              backDivP2.innerHTML = `开始时间：${respBody.stfAppoint.starttime}`;
+              backDivP3.innerHTML = `结束时间：${respBody.stfAppoint.endtime}`;
+            }else if(respBody.appoint == 1){
+              console.log(UserService.publicEmail , respBody.stfAppoint.account)
+              if(UserService.publicEmail == respBody.stfAppoint.account) {
+                // backDiv.className = 'back-div';
+                 orderBtn.innerHTML = "使用中";
+                 orderBtn.className = 'order-btn btn btn-link btn-link-use'
+                // backDivP2.innerHTML = `开始时间：${respBody.stfAppoint.starttime}`;
+                // backDivP3.innerHTML = `结束时间：${respBody.stfAppoint.endtime}`;
+                // backDivBtnCanel.className = 'back-div-none';
+              } else{
+                orderBtn.innerHTML = "占用中";
+                li.classList.add('device-is-busy')
+                a.removeAttribute('href')
+                backDiv.className = 'back-div-none';
+                button.className = 'btn btn-xs device-status state-busy btn-warning'
+                at.nodeValue = "设备繁忙"
+              }
+            } else {
+              backDiv.className = 'back-div-none';
+            }
+            img.setAttribute('src', `${jwtutil.baseUrl}${respBody.phoneSelect.assetNumbers}`)
+           // img.setAttribute('src', `http://localhost:7100/${device.enhancedImage24}`)
+            if(respBody.phoneSelect.brand == "未发现") {
+              respBody.phoneSelect.brand = device.serial;
+            }
+            phoneType1.innerHTML = `品牌：${respBody.phoneSelect.brandPrefix}`;
+            phoneType2.innerHTML = `系统： ${respBody.phoneSelect.phoneVersion}`
+            phoneType3.innerHTML = `屏幕大小： ${respBody.phoneSelect.phoneSize}`
+            phoneType4.innerHTML = `分辨率： ${respBody.phoneSelect.resolution}`
+            phoneType5.innerHTML = `设备型号： ${respBody.phoneSelect.equipmentType}`
+            titleType.innerHTML = `${respBody.phoneSelect.phoneType}`
+            // button
+          } else {
+          //  console.log("error");
+          //  console.log(error);
+          //  res.render('error', { error: err });
+          }
+        // })
 
         function getStateClasses(state) {
           var stateClasses = {
             using: 'state-using btn-primary',
             busy: 'state-busy btn-warning',
-            available: 'state-available btn-primary-outline',
+            available: 'btn-primary',
             ready: 'state-ready btn-primary-outline',
             present: 'state-present btn-primary-outline',
             preparing: 'state-preparing btn-primary-outline btn-success-outline',
@@ -78,28 +183,40 @@ module.exports = function DeviceListIconsDirective(
         }
 
         button.className = classes + getStateClasses(device.state)
-
-        if (device.state === 'available') {
-          name.classList.add('state-available')
-        } else {
-          name.classList.remove('state-available')
-        }
-
-        if (device.usable && !device.using) {
-          a.href = '#!/control/' + device.serial
-          li.classList.remove('device-is-busy')
-        }
-        else if (device.using && device.usable) {
-          a.href = '#!/control/' + device.serial
-        }
-        else {
-          a.removeAttribute('href')
-          li.classList.add('device-is-busy')
-        }
+        // UserService.getTime().then(resp=>{
+          // if(resp.data.cumulativeTime <= 60) {
+          //   a.removeAttribute('href')
+          //   name.classList.add('state-available')
+          //   li.classList.add('device-is-busy')
+          //   console.log(classes + getStateClasses(device.state));
+          //   button.className = "btn btn-xs device-status btn-default-outline"
+          //   if (device.state === 'available') {
+          //     name.classList.add('state-available')
+          //   } else {
+          //     name.classList.remove('state-available')
+          //   }
+          // }else {
+            if (device.state === 'available') {
+              name.classList.add('state-available')
+            } else {
+              name.classList.remove('state-available')
+            }
+    
+            if (device.usable) {
+              a.href = '#!/control/' + device.serial
+              li.classList.remove('device-is-busy')
+            }
+            else {
+              a.removeAttribute('href')
+              li.classList.add('device-is-busy')
+            }
+          // }
+          // })
         return li
-      }
+      // }
     }
   }
+}
 
   return {
     restrict: 'E'
@@ -119,15 +236,10 @@ module.exports = function DeviceListIconsDirective(
       var items = list.childNodes
       var prefix = 'd' + Math.floor(Math.random() * 1000000) + '-'
       var mapping = Object.create(null)
-      var builder = DeviceItem()
+      var builder = DeviceItem();
 
 
       function kickDevice(device, force) {
-        if (Object.keys(LogcatService.deviceEntries).includes(device.serial)) {
-          LogcatService.deviceEntries[device.serial].allowClean = true
-        }
-        LogcatService.allowClean = true
-        $rootScope.LogcatService = LogcatService
         return GroupService.kick(device, force).catch(function(e) {
           alert($filter('translate')(gettext('Device cannot get kicked from the group')))
           throw new Error(e)
@@ -135,45 +247,80 @@ module.exports = function DeviceListIconsDirective(
       }
 
       function inviteDevice(device) {
+        console.log('inviteDevice---', device)
         return GroupService.invite(device).then(function() {
           scope.$digest()
         })
       }
 
       element.on('click', function(e) {
-
-        var id
-
-        if (e.target.classList.contains('thumbnail')) {
-          id = e.target.id
-        } else if (e.target.classList.contains('device-status') ||
-          e.target.classList.contains('device-photo-small') ||
-          e.target.classList.contains('device-name')) {
-          id = e.target.parentNode.parentNode.id
-        } else if (e.target.parentNode.classList.contains('device-photo-small')) {
-          id = e.target.parentNode.parentNode.parentNode.id
-        }
-
-        if (id) {
-          var device = mapping[id]
-
-          if (e.altKey && device.state === 'available') {
-            inviteDevice(device)
-            e.preventDefault()
-          }
-
-          if (e.shiftKey && device.state === 'available') {
-            StandaloneService.open(device)
-            e.preventDefault()
-          }
-
-          if (device.using) {
-            if (e.target.classList.contains('btn') && e.target.classList.contains('state-using')) {
-              kickDevice(device)
+        // UserService.getTime().then(resp=>{
+        //   if(resp.data.cumulativeTime <= 60) {
+        //      VmodalOpenService.open();
+        //      e.preventDefault();
+        //      return false
+        //   } else {
+            var id
+            if(e.target.classList.contains('order-btn')) {
+              var sendDevices = mapping[e.target.parentNode.parentNode.id]
+              request.post({url:`${jwtutil.baseUrl}/stf/findPhoneBySerial`, form:{serial: sendDevices.serial}}, function(error, response, body) {
+                var respBody = JSON.parse(body)
+                sendDevices.brandPhone= respBody.phoneSelect.brand;
+                sendDevices.phoneType = respBody.phoneSelect.phoneType;
+                console.log(8888);
+                console.log(sendDevices);
+                timeOrderService.open(sendDevices);
+              })
+	      e.preventDefault();
+              }
+            if(e.target.classList.contains('back-div')) {
+              e.preventDefault();
+            }
+            if(e.target.classList.contains('backDivBtnCanel')) {
+              var sendDevices = mapping[e.target.parentNode.parentNode.parentNode.id]
+              request.post({url:`${jwtutil.baseUrl}/stf/findPhoneBySerial`, form:{serial: sendDevices.serial}}, function(error, response, body) {
+                var respBody = JSON.parse(body)
+                sendDevices.stfAppoint = respBody.stfAppoint
+                sendDevices.brandPhone= respBody.phoneSelect.brand;
+                sendDevices.phoneType = respBody.phoneSelect.phoneType;
+                sendDevices.sysVer= respBody.phoneSelect.phoneVersion;
+                phoneCancelnService.open(sendDevices)
+              })
               e.preventDefault()
             }
-          }
-        }
+            // if(e.target.classList.contains('backDivBtnenter')) {
+            //   console.log('使用')
+            //   e.preventDefault()
+            // }
+            if (e.target.classList.contains('thumbnail')) {
+               id = e.target.id
+            } else if (e.target.classList.contains('device-status') ||
+              e.target.classList.contains('device-photo-small') ||
+              e.target.classList.contains('device-status')) {
+              id = e.target.parentNode.parentNode.id
+            } else if (e.target.parentNode.classList.contains('device-photo-small')) {
+              id = e.target.parentNode.parentNode.parentNode.id
+            }
+    
+            if (id) {
+              var device = mapping[id];
+              if (e.altKey && device.state === 'available') {
+                inviteDevice(device)
+                e.preventDefault()
+              }
+    
+              if (e.shiftKey && device.state === 'available') {
+                StandaloneService.open(device)
+                e.preventDefault()
+              }
+    
+              if (device.using) {
+                kickDevice(device)
+                e.preventDefault()
+              }
+            }
+          // }
+        // })
       })
 
       // Import column definitions

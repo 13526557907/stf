@@ -5,16 +5,33 @@
 
   .row.unselectable
     .col-md-12
-      .widget-container.fluid-height.stf-device-list-tabs
-        .widget-content.padded
-
+      .widget-container.fluid-height.stf-device-list-tabs.col-md-12
+        .checkbox.col-md-12
+          span.brandText.col-md-1 品牌： 
+          .brandDiv.col-md-11
+            label(ng-repeat="brand in phoneValues[4].values track by $index")
+              input(type="checkbox",name="manufacturer",ng-model="brand.checked",ng-click="checkInput(brand,$event,$index,4)")
+              span {{brand.name}}
+        .checkbox.col-md-12
+          span.brandText.col-md-1 系统版本：
+          .brandDiv.col-md-11
+            label(ng-repeat="brand in phoneValues[1].values track by $index", ng-show="brand.type == phoneSearchIos ||  brand.type == phoneSearchAndroid")
+              input.brandCheck(type="checkbox",name="version",ng-model="brand.checked",ng-click="checkInput(brand,$event,$index,1)")
+              span {{brand.name}}
+        .checkbox.col-md-12
+          span.brandText.col-md-1 分辨率：
+          .brandDiv.col-md-11
+            label(ng-repeat="brand in phoneValues[3].values track by $index" , ng-show="brand.type == phoneSearchIos ||  brand.type == phoneSearchAndroid")
+              input(type="checkbox",name="display", ng-model="brand.checked",ng-click="checkInput(brand,$event,$index,3)")
+              span {{brand.name}}
+        .widget-content.padded.col-md-12
           .filtering-buttons
             datalist(id='searchFields')
               select(name='searchFields')
                 option(ng-repeat='column in columns', ng-value='column.name + ": "',
                 ng-bind='columnDefinitions[column.name].title | translate')
             input(type='search', autosave='deviceFilter'
-              name='deviceFilter', ng-model='search.deviceFilter', ng-change='applyFilter(search.deviceFilter)',
+              name='deviceFilter', ng-model='search.deviceFilter', ng-change='applyFilterInput(search.deviceFilter)',
               ng-model-options='{debounce: 150}'
               autocorrect='off', autocapitalize='off', spellcheck='false',
               list='searchFields', multiple, focus-element='search.focusElement',
@@ -47,10 +64,10 @@
 
                 device-list-icons(tracker='tracker', columns='columns', sort='sort', filter='filter')
 
-            uib-tab(active='activeTabs.details', select='focusSearch()', ng-if='!$root.basicMode')
-              uib-tab-heading
-                i.fa.fa-list
-                span(translate) Details
-              div.device-list-details-content(ng-if='activeTabs.details').selectable
+            //- uib-tab(active='activeTabs.details', select='focusSearch()', ng-if='!$root.basicMode')
+            //-   uib-tab-heading
+            //-     i.fa.fa-list
+            //-     span(translate) Details
+            //-   div.device-list-details-content(ng-if='activeTabs.details').selectable
 
-                device-list-details(tracker='tracker', columns='columns', sort='sort', filter='filter').selectable
+            //-     device-list-details(tracker='tracker', columns='columns', sort='sort', filter='filter').selectable

@@ -5,6 +5,7 @@ module.exports = function LogsCtrl($scope, $rootScope, $routeParams, LogcatServi
   cleanDeviceSettings()
 
   $scope.started = checkLogBtnStatus() === null ? false : checkLogBtnStatus()
+  console.log($scope.started)
   $scope.filters = {}
 
   $scope.filters.levelNumbers = LogcatService.filters.levelNumbers
@@ -77,6 +78,7 @@ module.exports = function LogsCtrl($scope, $rootScope, $routeParams, LogcatServi
         }
       }
     }
+    console.log(LogcatService.deviceEntries[deviceSerial])
 
     if (newValue !== oldValue) {
       LogcatService.deviceEntries[deviceSerial].started = newValue

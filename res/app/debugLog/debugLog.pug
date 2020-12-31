@@ -1,0 +1,93 @@
+//
+  Copyright © 2019 contains code contributed by Orange SA, authors: Denis Barbaron - Licensed under the Apache license 2.0
+//
+
+.debugPage(ng-controller='debugLogCtrl')
+ .phoneList
+   .tiileLogs
+    .tiileDiv
+      span.titleLine      
+      span.titleMessage 调试信息
+    .row
+      .col-xs-1-5 设备名称： {{phoneMessage.phoneSelect.brand}}
+      .col-xs-1-5 设备型号： {{phoneMessage.phoneSelect.phoneType}}
+      .col-xs-1-5 系统版本： {{phoneMessage.phoneSelect.phoneVersion}}
+      .col-xs-1-5 屏幕尺寸： {{phoneMessage.phoneSelect.phoneSize}}
+      .col-xs-1-5 屏幕分辨率：{{phoneMessage.phoneSelect.resolution}}
+      .row
+      .col-xs-1-5 开始时间： {{phoneMessage.startTime}}
+      .col-xs-1-5 结束时间： {{phoneMessage.startTime}}
+      .col-xs-1-5 消耗配额： {{phoneMessage.countPhone}}
+   .logsTable 
+     .tiileLogs
+      .tiileDiv
+        span.titleLine      
+        span.titleMessage 调试日志
+      table.table.table-condensed.logcat-filters-table(ng-show='true')
+        tr
+          td(width='1%') 
+            //- button(ng-model='started', uib-btn-checkbox, title='{{"Start/Stop Logging"|translate}}').btn.btn-xs.btn-primary-outline
+            //-   i.fa.fa-list-alt
+            //-   span(ng-if='started') {{"Stop"|translate}}
+            //-   span(ng-if='!started') {{"Get"|translate}}
+          td(width='6%')
+            select(ng-model='filters.priority', data-ng-options='l.name for l in filters.levelNumbers')
+              option(value='') {{"Logcat Level"|translate}}
+          td(width='10%')
+            input(ng-model='filters.date', type='text', placeholder='{{"Time"|translate}}', ng-keyup='validateDate(event=$event)').input-sm.form-control
+          td(width='10%')
+            input(ng-model='filters.pid', type='text', placeholder='{{"PID"|translate}}').input-sm.form-control
+          td(width='10%')
+            input(ng-model='filters.tid', type='text', placeholder='{{"TID"|translate}}').input-sm.form-control
+          td(width='14%')
+            input(ng-model='filters.tag', type='text', placeholder='{{"Tag"|translate}}').input-sm.form-control
+          td(width='40%')
+            input(ng-model='filters.message', type='text', placeholder='{{"Text"|translate}}').input-sm.form-control
+          td(width='0')
+            button(ng-click='clearTable()', ng-disabled='false', title='{{"Clear"|translate}}').btn.btn-xs.btn-primary-outline
+              i.fa.fa-trash-o
+              span(translate)  查询
+          td(width='0')
+            button(ng-click='saveLogs()', ng-disabled='false', title='{{"Save Logs"|translate}}').btn.btn-xs.btn-primary-outline
+              i.fa.fa-save
+              span(translate)  下载全部 
+
+      .logTable.scrollTable
+       table.table
+        tr(ng-repeat='data in dataList' ng-class='{"log-Error" : data.priorityLabel == "Error", "log-Debug"  : data.priorityLabel == "Debug" , "log-Info"  : data.priorityLabel == "Info"}')
+          td {{data.priorityLabel}}
+          td {{data.dateLabel}}
+          td {{data.pid}}
+          td {{data.tid}}
+          td {{data.tag}}
+          td {{data.message}}
+    
+    .logImage
+        .tiileLogs
+         .tiileDiv
+          span.titleLine      
+          span.titleMessage 调试图片
+        .downLownImg
+          button.btn.btn-primary.btn-xs
+            i.fa.fa-save
+            strong(translate ng-click="downLoadImg()") 下载全部
+         .row.imgListClass
+          //-  {{imageList}}
+          //-  a(ng-repeat='data in imageList' href="192.168.0.57:8081/app_file_view?attachID=16070&m=0.7857905439729295" target="_blank")
+          //-   img(src="192.168.0.57:8081/app_file_view?attachID=16070&m=0.7857905439729295", alt="")
+          //- .col-xs-1-5
+          //-  a(href="/static/logo/exports/testImage.png" target="_blank")
+          //-   img(src="/static/logo/exports/testImage.png", alt="")
+          //- .col-xs-1-5
+          //-   a(href="/static/logo/exports/testImage.png" target="_blank")
+          //-    img(src="/static/logo/exports/testImage.png", alt="")
+          //- .col-xs-1-5
+          //-   a(href="/static/logo/exports/testImage.png" target="_blank")
+          //-    img(src="/static/logo/exports/testImage.png", alt="")
+          //- .col-xs-1-5
+          //-   a(href="/static/logo/exports/testImage.png" target="_blank")
+          //-    img(src="/static/logo/exports/testImage.png", alt="")
+     
+      
+
+

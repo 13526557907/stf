@@ -8,6 +8,12 @@ module.exports =
     var ModalInstanceCtrl = function($scope, $uibModalInstance, device,
       tryToReconnect) {
       $scope.ok = function() {
+        console.log("重新连接。。。")
+        console.log(document.getElementById('minutes').innerHTML)
+        console.log(document.getElementById('seconds').innerHTML)
+        document.getElementById('minutes').innerHTML = "0"
+        document.getElementById('seconds').innerHTML = "0"
+        // document.getElementById('minutes').innerHTML
         $uibModalInstance.close(true)
         $route.reload()
       }

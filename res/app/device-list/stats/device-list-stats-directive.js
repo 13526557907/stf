@@ -1,9 +1,10 @@
 /**
 * Copyright © 2019 contains code contributed by Orange SA, authors: Denis Barbaron - Licensed under the Apache license 2.0
 **/
-
 module.exports = function DeviceListStatsDirective(
-  UserService
+  UserService,
+  VmodalOpenService,
+  timetipmodeService
 ) {
   return {
     restrict: 'E'
@@ -21,21 +22,40 @@ module.exports = function DeviceListStatsDirective(
       , usable: 0
       , busy: 0
       , using: 0
+      , time:0
       }
 
       scope.currentUser = UserService.currentUser
-
+      scope.timeDate = "";
       function findTextNodes() {
         var elements = element[0].getElementsByClassName('counter')
         for (var i = 0, l = elements.length; i < l; ++i) {
           nodes[elements[i].getAttribute('data-type')] = elements[i].firstChild
         }
+        gettime();
+       setTimeout(function() {
+        gettime();
+      }, 1000)
       }
-
+      function gettime() {  
+        UserService.getTime().then(resp=>{
+          scope.counter.time =  resp.data.cumulativeTime / 60;
+          nodes.time.nodeValue = scope.counter.time
+          if(resp.data.cumulativeTime <= 600 && resp.data.cumulativeTime > 0) {
+            timetipmodeService.open();
+          }
+          if(resp.data.cumulativeTime <= 0) {
+            VmodalOpenService.open();
+          }
+        })
+        
+      }
       function notify() {
-        nodes.total.nodeValue = scope.counter.total
+        nodes.total.nodeValue = scope.counter.total + 100
+        // nodes.total.nodeValue = 1500
         nodes.usable.nodeValue = scope.counter.usable
-        nodes.busy.nodeValue = scope.counter.busy
+        // nodes.busy.nodeValue = scope.counter.busy
+        nodes.busy.nodeValue = parseInt((scope.counter.total - scope.counter.usable) * 0.8)
         nodes.using.nodeValue = scope.counter.using
       }
 

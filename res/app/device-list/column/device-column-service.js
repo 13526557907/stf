@@ -1,7 +1,3 @@
-/**
-* Copyright © 2019 contains code contributed by Orange SA, authors: Denis Barbaron - Licensed under the Apache license 2.0
-**/
-
 var _ = require('lodash')
 
 var filterOps = {
@@ -22,7 +18,7 @@ var filterOps = {
   }
 }
 
-module.exports = function DeviceColumnService($filter, gettext, SettingsService, AppState) {
+module.exports = function DeviceColumnService($filter, gettext) {
   // Definitions for all possible values.
   return {
     state: DeviceStatusCell({
@@ -31,64 +27,24 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
         return $filter('translate')(device.enhancedStateAction)
       }
     })
-  , group: TextCell({
-      title: gettext('Group Name')
-    , value: function(device) {
-        return $filter('translate')(device.group.name)
-      }
-    })
-  , groupSchedule: TextCell({
-      title: gettext('Group Class')
-    , value: function(device) {
-        return $filter('translate')(device.group.class)
-      }
-    })
-  , groupOwner: LinkCell({
-      title: gettext('Group Owner')
-    , target: '_blank'
-    , value: function(device) {
-        return $filter('translate')(device.group.owner.name)
-      }
-    , link: function(device) {
-        return device.enhancedGroupOwnerProfileUrl
-      }
-    })
-  , groupEndTime: TextCell({
-      title: gettext('Group Expiration Date')
-    , value: function(device) {
-        return $filter('date')(device.group.lifeTime.stop, SettingsService.get('dateFormat'))
-      }
-    })
-  , groupStartTime: TextCell({
-      title: gettext('Group Starting Date')
-    , value: function(device) {
-        return $filter('date')(device.group.lifeTime.start, SettingsService.get('dateFormat'))
-      }
-    })
-  , groupRepetitions: TextCell({
-      title: gettext('Group Repetitions')
-    , value: function(device) {
-        return device.group.repetitions
-      }
-    })
-  , groupOrigin: TextCell({
-      title: gettext('Group Origin')
-    , value: function(device) {
-        return $filter('translate')(device.group.originName)
-      }
-    })
   , model: DeviceModelCell({
-      title: gettext('Model')
+      title: gettext('品牌')
     , value: function(device) {
-        return device.model || device.serial
+        return device.phoneType
+      }
+    })
+    , phoneOrder: DevicephoneOrderCell({
+      title: gettext('预约')
+    , value: function(device) {
+        return '预约'
       }
     })
   , name: DeviceNameCell({
-      title: gettext('Product')
+      title: gettext('型号')
     , value: function(device) {
-        return device.name || device.model || device.serial
+        return device.equipmentType || device.model || device.serial
       }
-    }, AppState.user.email)
+    })
   , operator: TextCell({
       title: gettext('Carrier')
     , value: function(device) {
@@ -101,12 +57,17 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
         return device.releasedAt ? new Date(device.releasedAt) : null
       }
     })
+  // , version: TextCell({
+  //     title: gettext('OS')
+  //   , value: function(device) {
+  //       return device.sysVer || ''
+  //     }
   , version: TextCell({
-      title: gettext('OS')
-    , value: function(device) {
-        return device.version || ''
-      }
-    , compare: function(deviceA, deviceB) {
+    title: gettext('OS')
+    , value: function (device) {
+      return device.version || ''
+    }
+      , compare: function (deviceA, deviceB) {
         var va = (deviceA.version || '0').split('.')
         var vb = (deviceB.version || '0').split('.')
         var la = va.length
@@ -130,49 +91,41 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
 
         return 0
       }
-    , filter: function(device, filter) {
-        var va = (device.version || '0').split('.')
-        var vb = (filter.query || '0').split('.')
-        var la = va.length
-        var lb = vb.length
-        var op = filterOps[filter.op || '=']
+      , filter: function (device, filter) {
+        // if (device.platform && device.platform.toLowerCase() !== 'android') {
+        //   return false
+        // }
 
-        // We have a single value and no operator or field. It matches
-        // too easily, let's wait for a dot (e.g. '5.'). An example of a
-        // bad match would be an unquoted query for 'Nexus 5', which targets
-        // a very specific device but may easily match every Nexus device
-        // as the two terms are handled separately.
-        if (filter.op === null && filter.field === null && lb === 1) {
-          return false
-        }
-
-        if (vb[lb - 1] === '') {
-          // This means that the query is not complete yet, and we're
-          // looking at something like "4.", which means that the last part
-          // should be ignored.
-          vb.pop()
-          lb -= 1
-        }
-
-        for (var i = 0, l = Math.min(la, lb); i < l; ++i) {
-          var a = parseInt(va[i], 10)
-          var b = parseInt(vb[i], 10)
-
-          // One of the values might be non-numeric, e.g. 'M'. In that case
-          // filter by string value instead.
-          if (isNaN(a) || isNaN(b)) {
-            if (!op(va[i], vb[i])) {
+        var queryArr = filter.query.split(".")[0]
+        if(queryArr.length = 1){
+          if(device.version) {
+            if(filter.query === device.version.split(".")[0]){
+              return true
+            }else{
               return false
             }
           }
-          else {
-            if (!op(a, b)) {
+        }else{ 
+          if(device.version) {
+            console.log("enter version")
+            console.log(device.version)
+            var version = device.version.split(".")[0]
+            console.log(version);
+            console.log(filter.query);
+            if(filter.query === version){
+              return true
+            }else{
+              return false
+            }
+          } else {
+            var version = ""
+            if(filter.query === version){
+              return true
+            }else{
               return false
             }
           }
         }
-
-        return true
       }
     })
   , network: TextCell({
@@ -193,24 +146,31 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
         return (device.network.type || '').toUpperCase()
       }
     })
+  // , display: TextCell({
+  //     title: gettext('屏幕尺寸')
+  //   , defaultOrder: 'desc'
+  //   , value: function(device) {
+  //       return device.resolvingPower
+  //     }
+  //   })
   , display: TextCell({
-      title: gettext('Screen')
+    title: gettext('Screen')
     , defaultOrder: 'desc'
-    , value: function(device) {
-        return device.display && device.display.width
-          ? device.display.width + 'x' + device.display.height
-          : ''
-      }
-    , compare: function(deviceA, deviceB) {
-        var va = deviceA.display && deviceA.display.width
-          ? deviceA.display.width * deviceA.display.height
-          : 0
-        var vb = deviceB.display && deviceB.display.width
-          ? deviceB.display.width * deviceB.display.height
-          : 0
-        return va - vb
-      }
-    })
+    , value: function (device) {
+      return device.display && device.display.width
+        ? device.display.width + 'x' + device.display.height
+        : ''
+    }
+    , compare: function (deviceA, deviceB) {
+      var va = deviceA.display && deviceA.display.width
+        ? deviceA.display.width * deviceA.display.height
+        : 0
+      var vb = deviceB.display && deviceB.display.width
+        ? deviceB.display.width * deviceB.display.height
+        : 0
+      return va - vb
+    }
+  })
   , browser: DeviceBrowserCell({
       title: gettext('Browser')
     , value: function(device) {
@@ -229,12 +189,6 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
         return device.manufacturer || ''
       }
     })
-  , marketName: TextCell({
-    title: gettext('Market name')
-    , value: function(device) {
-      return device.marketName || ''
-    }
-  })
   , sdk: NumberCell({
       title: gettext('SDK')
     , defaultOrder: 'desc'
@@ -255,6 +209,12 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
       title: gettext('CPU Platform')
     , value: function(device) {
         return device.cpuPlatform || ''
+      }
+    })
+    , platform: HuyaPlatFormCell({
+      title: gettext('Platform')
+      , value: function (device) {
+        return device.platform || ''
       }
     })
   , openGLESVersion: TextCell({
@@ -332,17 +292,17 @@ module.exports = function DeviceColumnService($filter, gettext, SettingsService,
       }
     })
   , provider: TextCell({
-      title: gettext('Location')
+      title: gettext('屏幕大小')
     , value: function(device) {
-        return device.provider ? device.provider.name : ''
+        return device.screenSize
       }
     })
-  , notes: DeviceNoteCell({
-      title: gettext('Notes')
-    , value: function(device) {
-        return device.notes || ''
-      }
-    })
+  // , notes: DeviceNoteCell({
+  //     title: gettext('Notes')
+  //   , value: function(device) {
+  //       return device.notes || ''
+  //     }
+  //   })
   , owner: LinkCell({
       title: gettext('User')
     , target: '_blank'
@@ -361,10 +321,8 @@ function zeroPadTwoDigit(digit) {
 }
 
 function compareIgnoreCase(a, b) {
-/***** fix bug: cast to String for Safari compatibility ****/
-  var la = (String(a) || '').toLowerCase()
-  var lb = (String(b) || '').toLowerCase()
-/***********************************************************/
+  var la = (a || '').toLowerCase()
+  var lb = (b || '').toLowerCase()
   if (la === lb) {
     return 0
   }
@@ -374,11 +332,17 @@ function compareIgnoreCase(a, b) {
 }
 
 function filterIgnoreCase(a, filterValue) {
-/***** fix bug: cast to String for Safari compatibility ****/
-  var va = (String(a) || '').toLowerCase()
-  var vb = String(filterValue).toLowerCase()
-/***********************************************************/
+  var va = (a || '').toLowerCase()
+  var vb = filterValue.toLowerCase()
   return va.indexOf(vb) !== -1
+}
+
+function HuyaPlatFormCell(optons) {
+  return _.defaults(optons, {
+    filter: function (item, filter) {
+      return filterIgnoreCase(optons.value(item), filter.query)
+    }
+  })
 }
 
 function compareRespectCase(a, b) {
@@ -611,7 +575,48 @@ function DeviceModelCell(options) {
   })
 }
 
-function DeviceNameCell(options, ownerEmail) {
+function DeviceNameCell(options) {
+  return _.defaults(options, {
+    title: options.title
+  , defaultOrder: 'asc'
+  , build: function() {
+      var td = document.createElement('td')
+      var a = document.createElement('span')
+      a.appendChild(document.createTextNode(''))
+      td.appendChild(a)
+      return td
+    }
+  , update: function(td, device) {
+      var a = td.firstChild
+      var t = a.firstChild
+
+      // if (device.using) {
+      //   a.className = 'device-product-name-using'
+      //   a.href = '#!/control/' + device.serial
+      // }
+      // else if (device.usable) {
+      //   a.className = 'device-product-name-usable'
+      //   a.href = '#!/control/' + device.serial
+      // }
+      // else {
+      //   a.className = 'device-product-name-unusable'
+      //   a.removeAttribute('href')
+      // }
+
+      t.nodeValue = options.value(device)
+
+      return td
+    }
+  , compare: function(a, b) {
+      return compareIgnoreCase(options.value(a), options.value(b))
+    }
+  , filter: function(device, filter) {
+      return filterIgnoreCase(options.value(device), filter.query)
+    }
+  })
+}
+
+function DevicephoneOrderCell(options) {
   return _.defaults(options, {
     title: options.title
   , defaultOrder: 'asc'
@@ -626,28 +631,31 @@ function DeviceNameCell(options, ownerEmail) {
       var a = td.firstChild
       var t = a.firstChild
 
-      if (device.using && device.owner.email === ownerEmail) {
-        a.className = 'device-product-name-using'
-        a.href = '#!/control/' + device.serial
-      }
-      else if (device.usable && !device.using) {
-        a.className = 'device-product-name-usable'
-        a.href = '#!/control/' + device.serial
-      }
-      else {
-        a.className = 'device-product-name-unusable'
-        a.removeAttribute('href')
-      }
+      a.className = 'btn btn-xs btn-primary-outline DevicephoneOrder'
 
       t.nodeValue = options.value(device)
 
       return td
     }
-  , compare: function(a, b) {
-      return compareIgnoreCase(options.value(a), options.value(b))
-    }
+  , compare: (function() {
+      var order = {
+        using: 10
+      , automation: 15
+      , available: 20
+      , busy: 30
+      , ready: 40
+      , preparing: 50
+      , unauthorized: 60
+      , offline: 70
+      , present: 80
+      , absent: 90
+      }
+      return function(deviceA, deviceB) {
+        return order[deviceA.state] - order[deviceB.state]
+      }
+    })()
   , filter: function(device, filter) {
-      return filterIgnoreCase(options.value(device), filter.query)
+      return device.state === filter.query
     }
   })
 }

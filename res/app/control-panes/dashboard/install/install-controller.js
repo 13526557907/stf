@@ -19,7 +19,15 @@ module.exports = function InstallCtrl(
   }
 
   $scope.installFile = function($files) {
+    var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+    if(reg.test($files[0].name)) {
+      alert("文件名不能包含中文或者空格！！")
+      return;
+    }
+    console.log("enter files test")
+    console.log($files);
     if ($files.length) {
+      $scope.showChinaErr = false;
       return InstallService.installFile($scope.control, $files)
     }
   }

@@ -16,18 +16,20 @@ module.exports = function DeviceScreenDirective(
   , scope: {
       control: '&'
     , device: '&'
+    , quality: '='
     }
   , link: function(scope, element) {
+
       var URL = window.URL || window.webkitURL
       var BLANK_IMG =
         'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
       var cssTransform = VendorUtil.style(['transform', 'webkitTransform'])
-
-      var device = scope.device()
+      var device = scope.device();
+      console.log("devicesUrl=====",device.display.url);
+      console.log(URL)
       var control = scope.control()
-
+      var rate = scope.quality
       var input = element.find('input')
-
       var screen = scope.screen = {
         rotation: 0
       , bounds: {
@@ -57,7 +59,9 @@ module.exports = function DeviceScreenDirective(
           }
           catch (err) { /* noop */ }
         }
-
+        console.log('device1:',device.display)
+        console.log('displayUrl',scope.device().display.url)
+        console.log('device2:',device.display.url)
         var ws = new WebSocket(device.display.url)
         ws.binaryType = 'blob'
 
@@ -186,10 +190,19 @@ module.exports = function DeviceScreenDirective(
 
         function onScreenInterestGained() {
           if (ws.readyState === WebSocket.OPEN) {
+            ws.send(rate)
             ws.send('size ' + adjustedBoundSize.w + 'x' + adjustedBoundSize.h)
             ws.send('on')
           }
         }
+
+        scope.$watch('quality', function(newValue) {
+          console.log(window.location.href)
+          console.log('In screen-directive: rate change to ' + newValue)
+          rate = newValue
+          onScreenInterestGained()
+        })
+
 
         function onScreenInterestAreaChanged() {
           if (ws.readyState === WebSocket.OPEN) {
@@ -346,6 +359,9 @@ module.exports = function DeviceScreenDirective(
               scope.$apply(function() {
                 scope.displayError = 'secure'
               })
+            } else {
+              console.log(message)
+              console.log("测试成功")
             }
           }
         })()

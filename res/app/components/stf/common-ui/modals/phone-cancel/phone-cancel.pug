@@ -1,0 +1,20 @@
+.stf-fatal-message.stf-modal
+  .modal-header.dialog-header-notify
+    h4.modal-title.text-danger
+      i.fa.fa-exclamation-circle.fa-fw
+      span(translate) 取消预约
+  .modal-body(translate)
+    div.alert.alert-danger.showmodel(ng-show="modelShow") {{message}}
+    ul
+      li 手机型号：{{device.brandPhone}}
+      li 手机系统：{{device.sysVer}}
+      li 开始时间：{{device.stfAppoint.starttime}}
+      li 结束时间：{{device.stfAppoint.endtime}}
+
+  .modal-footer
+   button.btn.btn-primary(type='button', ng-click='cancel()')
+      i.fa
+      span(translate) 返回
+    button.btn.btn-primary(type='button', ng-click='ok()')
+      i.fa
+      span(translate) 确定取消

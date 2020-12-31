@@ -1,0 +1,62 @@
+  .timeModel.modal-dialog{
+    width:450px !important;
+  }
+  .showmodel{
+    padding:0;
+    text-align: center;
+  }
+  .modalPad{
+    padding: 15px 100px;
+  }
+  .timeInput,.timeInput1{
+    display: flex;
+  }
+  .timeInput,.timeInput1 > label{
+    line-height: 30px;
+  }
+  .timeInput > a{
+    line-height: 30px;
+  }
+  .timeInput1 > a{  
+    line-height: 30px;
+    color: #03B615;
+    font-weight: 500;
+  }
+  .quesimg{
+    background: url(../../../../../../../res/common/logo/exports/question.png) no-repeat 0 0;
+    width: 25px;
+    height: 25px;
+    float: left;
+    text-indent: -9999em;
+    margin-left: 20px;
+    background-size: 100% auto;
+    -webkit-background-size: 100% auto;
+  }
+
+  .full button span {
+    background-color: limegreen;
+    border-radius: 32px;
+    color: black;
+  }
+  .partially button span {
+    background-color: orange;
+    border-radius: 32px;
+    color: black;
+  }
+  .btn[class*="fa"], .btn[class*="fa"] {
+    margin-right: 0px !important;
+    background: #fff !important;
+    color: #000;
+  }
+  table{
+    background-color: #fff;
+  }
+
+  .btn-info:active:hover, .btn-info.active:hover, .open > .dropdown-toggle.btn-info:hover, .btn-info:active:focus, .btn-info.active:focus, .open > .dropdown-toggle.btn-info:focus, .btn-info:active.focus, .btn-info.active.focus, .open > .dropdown-toggle.btn-info.focus {
+    color: #fff;
+    background-color: #269abc !important;
+    border-color: #1b6d85 !important;
+}
+.minTime > tbody > .text-center{
+  display: none !important;
+}

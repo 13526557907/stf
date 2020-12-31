@@ -8,5 +8,10 @@ module.exports = angular.module('stf.modals', [
   require('./socket-disconnected').name,
   require('./version-update').name,
   require('./add-adb-key-modal').name,
-  require('./save-log-modal').name
+  require('./save-log-modal').name,
+  require('./vmodal-open').name,
+  require('./timetip-mode').name,
+  require('./time-order').name,
+  require('./phone-cancel').name,
+  require('./phone-timeout').name
 ])

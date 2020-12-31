@@ -9,7 +9,20 @@
 .enter-fade.enter-fade-active {
   opacity: 1;
 }
+.screen-quality {
+  float: right !important;
+  margin-top: 10px;
+  text-align: center;
+  margin-right: 5px;
+}
+.screen-quality > p{
+  margin-top: 2px;
+  float: left;
+}
 
+.screen-quality > select {
+  float: left;
+}
 device-screen {
   width: 100%;
   height: 100%;
@@ -278,4 +291,10 @@ device-screen input {
   -o-transition: none !important;
   -ms-transition: none !important;
   transition: none !important;
+}
+.time{
+  float: left;
+  margin-left: 17px;
+  margin-top: 12px;
+  color: #167FFC;
 }

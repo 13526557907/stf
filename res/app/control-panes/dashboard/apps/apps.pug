@@ -2,16 +2,27 @@
   .heading
     stacked-icon(icon='fa-th-large', color='color-lila')
     span(translate) Apps
+    button.btn.btn-primary-outline.icon-app.pull-right(ng-click='reboot()').color-pink
+      i.fa.fa-stop-circle.fa-lg.color-blue
+      .icon-title {{"重启" | translate}}
 
     button.btn.btn-primary-outline.icon-app.pull-right(ng-click='openSettings()')
       i.fa.fa-gear.fa-lg.color-darkgray
       .icon-title {{"Settings" | translate}}
 
-    button.btn.btn-primary-outline.icon-app.pull-right(ng-click='control.openStore()').color-pink
+    button.btn.btn-primary-outline.icon-app.pull-right(ng-click='openStore()').color-pink
       i.fa.fa-shopping-cart.fa-lg.color-blue
       .icon-title {{"App Store" | translate}}
 
+    button.btn.btn-primary-outline.icon-app.pull-right(ng-click='clickPower()')
+      i.fa.fa-power-off.fa-lg.color-darkgray
+      .icon-title {{"亮屏11" | translate}}
+
   .widget-content.padded
+    button.btn.btn-primary-outline.icon-app.pull-right(ng-click='camera()')
+      i.fa-camera-retro.fa-lg.color-darkgreen
+      .icon-title {{"相机" | translate}}
+
     button.btn.btn-primary-outline.icon-app.pull-right(ng-click='openWiFiSettings()')
       i.fa.fa-wifi.fa-lg.color-skyblue
       .icon-title {{"WiFi" | translate}}

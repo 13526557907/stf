@@ -9,11 +9,13 @@ module.exports = function GroupServiceFactory(
   }
 
   groupService.invite = function(device) {
+    console.log('inviteDeviceEnter---', device)
     if (!device.usable) {
       return Promise.reject(new Error('Device is not usable'))
     }
 
-    var tx = TransactionService.create(device)
+    var tx = TransactionService.create(device);
+    console.log("tx++",tx)
     socket.emit('group.invite', device.channel, tx.channel, {
       requirements: {
         serial: {
@@ -22,6 +24,8 @@ module.exports = function GroupServiceFactory(
         }
       }
     })
+
+    //stf provider --name jinglingyun --min-port 7400 --max-port 7700 --connect-sub tcp://127.0.0.1:7114 --connect-push tcp://127.0.0.1:7116 --group-timeout 900 --public-ip master节点ip --storage-url http://localhost:7100/ --adb-host slave结点ip --adb-port 5037 --vnc-initial-size 600x800 --mute-master never --allow-remote
     return tx.promise
       .then(function(result) {
         return result.device
@@ -37,6 +41,7 @@ module.exports = function GroupServiceFactory(
     }
 
     var tx = TransactionService.create(device)
+    console.log(tx);
     socket.emit('group.kick', device.channel, tx.channel, {
       requirements: {
         serial: {

@@ -16,21 +16,21 @@
 
     .button-spacer
 
-    .pull-right
-      button.btn.btn-primary-outline.btn-sm.transparent-border(
-        ng-click='zoom({min: 80, step: -50})',
-        ng-disabled='!screenshots.length')
-        i.fa.fa-minus
 
-      input(type='range', ng-model='screenShotSize', min='80', max='480', step='10',
-      ng-model-options='{ updateOn: "default blur", debounce: { default: 100, blur: 0} }',
-      ng-disabled='!screenshots.length').zoom-range
+    //- .pull-right
+    //-   button.btn.btn-primary-outline.btn-sm.transparent-border(
+    //-     ng-click='zoom({min: 80, step: -50})',
+    //-     ng-disabled='!screenshots.length')
+    //-     i.fa.fa-minus
 
-      button.btn.btn-primary-outline.btn-sm.transparent-border(
-        ng-click='zoom({max: 480, step: 50})',
-        ng-disabled='!screenshots.length')
-        i.fa.fa-plus
+    //-   input(type='range', ng-model='screenShotSize', min='80', max='480', step='10',
+    //-   ng-model-options='{ updateOn: "default blur", debounce: { default: 100, blur: 0} }',
+    //-   ng-disabled='!screenshots.length').zoom-range
 
+    //-   button.btn.btn-primary-outline.btn-sm.transparent-border(
+    //-     ng-click='zoom({max: 480, step: 50})',
+    //-     ng-disabled='!screenshots.length')
+    //-     i.fa.fa-plus
   .widget-content.padded
     nothing-to-show(message='{{"No screenshots taken"|translate}}', icon='fa-camera', ng-show='!screenshots.length')
 

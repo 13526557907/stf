@@ -4,9 +4,8 @@
 
 module.exports =
   function ControlPanesController($scope, $http, gettext, $routeParams,
-    $timeout, $location, DeviceService, GroupService, ControlService,
-    StorageService, FatalMessageService, SettingsService) {
-
+    $timeout, $location, DeviceService, GroupService, ControlService, $route,$window,
+    StorageService, FatalMessageService, SettingsService, UserService) {
     var sharedTabs = [
       {
         title: gettext('Screenshots'),
@@ -14,18 +13,18 @@ module.exports =
         templateUrl: 'control-panes/screenshots/screenshots.pug',
         filters: ['native', 'web']
       },
-      {
-        title: gettext('Automation'),
-        icon: 'fa-road color-lila',
-        templateUrl: 'control-panes/automation/automation.pug',
-        filters: ['native', 'web']
-      },
-      {
-        title: gettext('Advanced'),
-        icon: 'fa-bolt color-brown',
-        templateUrl: 'control-panes/advanced/advanced.pug',
-        filters: ['native', 'web']
-      },
+      // {
+      //   title: gettext('Automation'),
+      //   icon: 'fa-road color-lila',
+      //   templateUrl: 'control-panes/automation/automation.pug',
+      //   filters: ['native', 'web']
+      // },
+      // {
+      //   title: gettext('Advanced'),
+      //   icon: 'fa-bolt color-brown',
+      //   templateUrl: 'control-panes/advanced/advanced.pug',
+      //   filters: ['native', 'web']
+      // },
       {
         title: gettext('File Explorer'),
         icon: 'fa-folder-open color-blue',
@@ -56,26 +55,39 @@ module.exports =
         templateUrl: 'control-panes/logs/logs.pug',
         filters: ['native', 'web']
       }
-    ].concat(angular.copy(sharedTabs))
+    ]
 
     $scope.device = null
     $scope.control = null
 
     // TODO: Move this out to Ctrl.resolve
     function getDevice(serial) {
+      console.log("序列号",serial)
       DeviceService.get(serial, $scope)
         .then(function(device) {
+          console.log("devices====",device);
+          console.log(device.display.url);
           return GroupService.invite(device)
         })
         .then(function(device) {
+          console.log(device)
+          console.log("enter1",device.display.url);
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
 
           // TODO: Change title, flickers too much on Chrome
           // $rootScope.pageTitle = device.name
-
-          SettingsService.set('lastUsedDevice', serial)
-
+            // UserService.getTime().then(resp=>{
+            //   if(resp.data.cumulativeTime <= 60) {
+            //     $timeout(function() {
+            //       $location.path('/')
+            //     })
+            //     return;
+            //   }
+              SettingsService.set('lastUsedDevice', serial)
+              // })
+              console.log(device)
+            console.log("enter2",device.display.url);
           return device
         })
         .catch(function() {
@@ -88,6 +100,13 @@ module.exports =
     getDevice($routeParams.serial)
 
     $scope.$watch('device.state', function(newValue, oldValue) {
+      console.log("valueLog")
+      // console.log(newValue,oldValue)
+      if(newValue == undefined && oldValue == undefined) {
+       // $window.location.reload()
+       console.log(newValue, oldValue)
+        
+      }
       if (newValue !== oldValue) {
 /*************** fix bug: it seems automation state was forgotten ? *************/
         if (oldValue === 'using' || oldValue === 'automation') {

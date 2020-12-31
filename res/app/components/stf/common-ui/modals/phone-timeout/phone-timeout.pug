@@ -1,0 +1,13 @@
+.stf-fatal-message.stf-modal
+  .modal-header.dialog-header-notify
+    h4.modal-title.text-danger
+      i.fa.fa-exclamation-circle.fa-fw
+      span(translate) 提示
+  .modal-body(translate) 设备已到别人预约时间段，如需使用请提前预约！
+  .modal-footer
+    //- button.btn.btn-primary(type='button', ng-click='cancel()')
+    //-   i.fa
+    //-   span(translate) 继续使用
+    button.btn.btn-primary(type='button', ng-click='getback()')
+      i.fa
+      span(translate) 返回

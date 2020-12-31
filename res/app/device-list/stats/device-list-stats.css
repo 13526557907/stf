@@ -75,4 +75,9 @@
     font-size: 0.8em;
     font-weight: 500;
   }
+  .startTime > p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

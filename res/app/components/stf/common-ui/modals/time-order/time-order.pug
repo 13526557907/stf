@@ -1,0 +1,39 @@
+.stf-fatal-message.stf-modal.timeModel
+  .modal-header.dialog-header-notify
+    h4.modal-title.text-danger
+      i.fa.fa-exclamation-circle.fa-fw
+      span(translate) 预约手机使用时间
+  .modal-body.modalPad(translate)
+    div.alert.alert-danger.showmodel(ng-show="modelShow") {{message}} 
+     span(ng-show="goInvest") 时长额度不够，请&nbsp
+      a(ng-click="goInvestFunc()") 充值
+    .form-group.group-schedule-item.timeInput1
+      label.group-list-label(translate) 预约设备:&nbsp &nbsp &nbsp
+      a {{device.brandPhone}}
+    .form-group.group-schedule-item.timeInput
+      label.group-list-label(translate) 开始使用时间:&nbsp &nbsp &nbsp
+      p(class="input-group")
+        input( type="text" class="form-control" ng-model="timeObj.startTime" uib-datepicker-popup="{{format}}"  is-open="popup1.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats")
+        span(class="input-group-btn")
+          button(type="button" class="btn btn-default timeBtn" ng-click="open1()")
+            i(class="glyphicon glyphicon-calendar")
+      div(uib-timepicker class="minTime" ng-model="timeObj.startTimeSen" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian")
+    .form-group.group-schedule-item.timeInput
+      label.group-list-label(translate) 结束使用时间:&nbsp &nbsp &nbsp 
+      p(class="input-group")
+        input( type="text" class="form-control" ng-model="timeObj.endTime" uib-datepicker-popup="{{format}}"  is-open="popup2.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats")
+        span(class="input-group-btn")
+          button(type="button" class="btn btn-default" ng-click="open2()")
+            i(class="glyphicon glyphicon-calendar")
+      div(uib-timepicker class="minTime" ng-model="timeObj.endTimeSen"  ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian")
+    .form-group.group-schedule-item.timeInput
+      label.group-list-label(translate)&nbsp &nbsp预约金:&nbsp &nbsp &nbsp
+      a(href="") {{timeMin}} 分钟
+      apan.quesimg(tooltip-placement="right" uib-tooltip="预约真机需要支付相应的真机使用时长作为预约金，确定预约立即扣除，若主动取消预约不退还预约金，预约失败将退还预约金。")
+  .modal-footer
+    button.btn.btn-primary(type='button', ng-click='cancel()')
+      i.fa
+      span(translate) 取消
+    button.btn.btn-primary.loadingBtn(type='button'  ng-click='ok()')
+      i.fa
+      span(translate) 确定预约

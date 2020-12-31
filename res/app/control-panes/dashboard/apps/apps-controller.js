@@ -1,6 +1,8 @@
 // See https://github.com/android/platform_packages_apps_settings/blob/master/AndroidManifest.xml
 
-module.exports = function ShellCtrl($scope) {
+
+
+module.exports = function ShellCtrl($scope,$filter,gettext) {
   $scope.result = null
 
   var run = function(cmd) {
@@ -26,8 +28,24 @@ module.exports = function ShellCtrl($scope) {
   }
 
   $scope.openWiFiSettings = function() {
-    //openSetting('WifiSettingsActivity')
+    openSetting('WifiSettingsActivity')
     run('am start -a android.settings.WIFI_SETTINGS')
+  }
+  $scope.clickPower = function() {
+    console.log("返回。。");
+
+    run("input keyevent BACK")
+  }
+
+  $scope.openStore = function() {
+    console.log("this is abb store")
+    run("monkey -p com.huawei.appmarket -c android.intent.category.LAUNCHER 1")
+    console.log(run("umpsys activity | findstr 'mResume'"))
+  }
+
+
+  $scope.camera = function() {
+    run('am start -a android.media.action.STILL_IMAGE_CAMERA')
   }
 
   $scope.openLocaleSettings = function() {
@@ -36,6 +54,23 @@ module.exports = function ShellCtrl($scope) {
 
   $scope.openIMESettings = function() {
     openSetting('KeyboardLayoutPickerActivity')
+  }
+
+  $scope.reboot = function() {
+    var config = {
+      rebootEnabled: true
+    }
+
+    /* eslint no-console: 0 */
+    if (config.rebootEnabled) {
+      var line1 = $filter('translate')(gettext('Are you sure you want to reboot this device?'))
+      var line2 = $filter('translate')(gettext('The device will be unavailable for a moment.'))
+      if (confirm(line1 + '\n' + line2)) {
+        $scope.control.reboot().then(function(result) {
+          console.error(result)
+        })
+      }
+    }
   }
 
   $scope.openDisplaySettings = function() {
